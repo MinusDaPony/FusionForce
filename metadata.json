@@ -1,0 +1,17 @@
+{
+	"id": "FusionForce",
+	"name": "Fusion Force",
+	"display_name": "Fusion Force",
+	"author": ["Minus", "LunaAstraCassiopeia", "amstd", "Gappie"],
+	"description": "Adds 40 new Fusion Jokers",
+	"prefix": "fuseforce",
+	"main_file": "FusionForce.lua",
+	"priority": 0,
+	"badge_colour": "BD597A",
+	"badge_text_colour": "FFFFFF",
+	"version": "1.1.2",
+	"dependencies": [
+		"Steamodded (>=1.0.0~BETA-0827a)", 
+		"FusionJokers"
+	],
+}
