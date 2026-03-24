@@ -9,8 +9,10 @@ Cross-Mod content is minimal right now:
 - Tsunami (One gold fusion that needs tweaking)
 - Ortalab (Display the artist credit for the individual card)
 
---changelog
+## changelog
+
 V1.1.2
+
 Added artist name text to Localization so that this mod no longer crashes upon loading Ortalab. This addition in the first place was meant to be a sort of cross-mod code, so it's ironic that it made the two incompatible.
 All fusions are set to correct their sell values on creation now, using a really inefficient method. But it works!
 Time Keeper now says "Patience" when he gains another Discard at the end of round, instead of every time you gain a discard at the start of a blind. This is how it was intended.
@@ -21,6 +23,7 @@ Added Fusions: Water Bottle "Dry Jokes are Thirsty Work", Kintusgi, Greener Joke
 Known bugs: Rewards Card probably negates other debt based jokers. Shadowman is entirely broken and has had his fusion disabled. Gold Skipper text should use accurate splash text, and use splashed cards to increase dollars gained, but doesn't yet. Bargaining Chips doesn't show confirmation message of the blind being counted.
 
 v1.1.1
+
 Prosopagnosia gives $2 instead of $1, so now it's better than Faceless Joker when discarding 3 face cards.
 Over and Out gives x1.10 chips and x1.4 mult instead of just x1.5 mult, to keep with 10 4 theme. Also makes 10s and 4s always score as there were and still are a few cases where the fused version will give a worse score, but at least now it has a bit more utility.
 Optimist gives 3 discards instead of 2
@@ -38,4 +41,5 @@ Added gold fusions: Skipper, and Electrum Joker
 Known bugs: Rewards Card probably negates other debt based jokers. Shadowman is entirely broken and has had his fusion disabled. Gold Skipper text should use accurate splash text, and use splashed cards to increase dollars gained, but doesn't yet
 
 v1.1.0
+
 Mod taken over by Minus. Everything is working again. New art made for Energy Drink and Over and Out by Minus.
