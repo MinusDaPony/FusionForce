@@ -6,10 +6,24 @@ Requires Fusion Jokers mod (https://github.com/wingedcatgirl/Fusion-Jokers)
 Currently contains 40+ fusions using Vanilla Jokers! See the Collection ingame for more information!
 
 Cross-Mod content is minimal right now:
-- Tsunami (One gold fusion that needs tweaking)
+- Tsunami (One gold fusion that needs tweaking. Mostly excludes this mod because Splash having so many fusions causes the shop and collection wiggle to go nuts. Shadow spectral also ignores Splash or else it would generate that a LOT. Since Tsunami has a dedicated spectral for Splash, you might think was planned from the start, but it's just a nice coincidence.)
+- CardSleeves (One Sleeve version of the deck)
 - Ortalab (Display the artist credit for the individual card)
 
 ## changelog
+
+V1.1.3
+
+Potato added to team. Fusion components that can be used for more than one fusion that you currently have will no longer have a flickering fuse price, instead showing no button at all. The ??cost greyed-out fusion button no longer shows up at all times when a fusable joker is selected. This change is because of just how many jokers can be fused now, so it's not needed. Shop jokers now wiggle when you have a joker that can fuse with them. The collection now wiggles jokers that can be fused with the ones you're holding, for those that need the extra more specific help finding the joker they need. This behavior is not used for Splash fusions from Tsunami. Temporary sell value fix has been removed as the base fusion mod now fixes this.
+Scratch buffed to a 2/8 chance. Cave Painting code changed to favor suits in your deck.
+
+Added Extras: Shadow (This Spectral lets you get the fusion components you need), Fusion Vouchers (Reduces prices of fusing), Minus Deck, Minus Sleeve
+
+Added Fusions: Smurf Joker, Fused Joker, RGB Joker, Card Collection, Chancer, Sticker Joker, Golden Calf, Vain Joker, Fruity Joker, Twotwo Joker, The Straight Man, Flushed Joker, Shadowman
+
+Added gold fusions: Golden Calf
+
+Known bugs: Rewards Card probably negates other debt based jokers. Bargaining Chips doesn't show confirmation message of the blind being counted. Card Collection says "+1 Joker" even when it gives +2. If a joker has a fusion in Fusion Jokers AND Fusion Force then it does not display the one for Jusion Jokers properly, not wiggling and also not working with Shadow anymore. Having 3 cards that can all fuse with each to make 3 different fusions bugs out the fusion selection and prevents any from being fused.
 
 V1.1.2
 
