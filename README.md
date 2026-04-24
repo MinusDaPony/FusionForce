@@ -3,14 +3,24 @@
 
 Requires Fusion Jokers mod (https://github.com/wingedcatgirl/Fusion-Jokers)
 
-Currently contains 40+ fusions using Vanilla Jokers! See the Collection ingame for more information!
+Currently contains 55+ fusions using Vanilla Jokers! See the Collection ingame for more information!
 
-Cross-Mod content is minimal right now:
-- Tsunami (One gold fusion that needs tweaking. Mostly excludes this mod because Splash having so many fusions causes the shop and collection wiggle to go nuts. Shadow spectral also ignores Splash or else it would generate that a LOT. Since Tsunami has a dedicated spectral for Splash, you might think was planned from the start, but it's just a nice coincidence.)
+Cross-Mod content:
+- Ortalab has 10+ fusions! (Also artist credit display for the individual cards)
 - CardSleeves (One Sleeve version of the deck)
-- Ortalab (Display the artist credit for the individual card)
+- Tsunami (One gold fusion. Mostly excludes this mod because Splash having so many fusions causes the shop and collection wiggle to go nuts. Shadow spectral also ignores Splash or else it would generate that a LOT. Since Tsunami has a dedicated spectral for Splash, you might think was planned from the start, but it's just a nice coincidence.)
 
 ## changelog
+
+V1.2.0
+
+Merged with the Ortalab Fusion Virtues mod. Added attributes to all jokers. Fixed 4 triple fusions not listing how much money they give properly. Clarified Shadowman ability. Fixed Shadowman crashing if you had fusions from other mods. Fixed FusionJokers fusions not working right in cases of wiggling and the Shadow Spectral. Fixed a long overdue bug in Power Pop, remaking most of the code, so now it no longer can trigger outside of the game it's fused in. Fixed bug where Prosopagnosia was just simply not making cards act as face cards as intended, no idea when this code stopped working.
+
+Added Fusions: Gargoyle, Ratio Road, Ransom Note, Unlucky Cat, Sand Joker, Assassin
+
+Added Ortalab Fusions: Diamond Demon, Heart Mimic, Spade Slime, Club Zombie, Blinded By Science, Dangerous Duo, Insider Trader Joker, Physicist, Art Heist, Perfidy, Necromancer
+
+Known bugs: Rewards Card probably negates other debt based jokers. Bargaining Chips doesn't show confirmation message of the blind being counted. Card Collection says "+1 Joker" even when it gives +2. Having 3 cards that can all fuse with each to make 3 different fusions bugs out the fusion selection and prevents any from being fused.
 
 V1.1.3
 
@@ -23,7 +33,7 @@ Added Fusions: Smurf Joker, Fused Joker, RGB Joker, Card Collection, Chancer, St
 
 Added gold fusions: Golden Calf
 
-Known bugs: Rewards Card probably negates other debt based jokers. Bargaining Chips doesn't show confirmation message of the blind being counted. Card Collection says "+1 Joker" even when it gives +2. If a joker has a fusion in Fusion Jokers AND Fusion Force then it does not display the one for Jusion Jokers properly, not wiggling and also not working with Shadow anymore. Having 3 cards that can all fuse with each to make 3 different fusions bugs out the fusion selection and prevents any from being fused.
+Known bugs: Rewards Card probably negates other debt based jokers. Bargaining Chips doesn't show confirmation message of the blind being counted. Card Collection says "+1 Joker" even when it gives +2. If a joker has a fusion in Fusion Jokers AND Fusion Force then it does not display the one for Jusion Jokers properly, not wiggling and also not working with Shadow anymore. Having 3 cards that can all fuse with each to make 3 different fusions bugs out the fusion selection and prevents any from being fused. triple fusions don't properly display the money they give. Shadowman crashes if you have fusions from other mods. Power Pop's effect persists outside of the game it was made in.
 
 V1.1.2
 
@@ -34,7 +44,7 @@ Energy Drink now spawns a Runner when it runs out of chips. This is for all thos
 
 Added Fusions: Water Bottle "Dry Jokes are Thirsty Work", Kintusgi, Greener Joker, Paranormal Joker, Black Soul, Bargaining Chips, Giant Beanstalk
 
-Known bugs: Rewards Card probably negates other debt based jokers. Shadowman is entirely broken and has had his fusion disabled. Gold Skipper text should use accurate splash text, and use splashed cards to increase dollars gained, but doesn't yet. Bargaining Chips doesn't show confirmation message of the blind being counted.
+Known bugs: Rewards Card probably negates other debt based jokers. Shadowman is entirely broken and has had his fusion disabled. Gold Skipper text should use accurate splash text, and use splashed cards to increase dollars gained, but doesn't yet. Bargaining Chips doesn't show confirmation message of the blind being counted. Power Pop's effect persists outside of the game it was made in.
 
 v1.1.1
 
@@ -52,7 +62,7 @@ Added fusions: Minotaur, Time Keeper, Four Inch Gap, Cave Painting, Skipper, Two
 
 Added gold fusions: Skipper, and Electrum Joker
 
-Known bugs: Rewards Card probably negates other debt based jokers. Shadowman is entirely broken and has had his fusion disabled. Gold Skipper text should use accurate splash text, and use splashed cards to increase dollars gained, but doesn't yet
+Known bugs: Rewards Card probably negates other debt based jokers. Shadowman is entirely broken and has had his fusion disabled. Gold Skipper text should use accurate splash text, and use splashed cards to increase dollars gained, but doesn't yet. Power Pop's effect persists outside of the game it was made in.
 
 v1.1.0
 

@@ -12,6 +12,10 @@ SMODS.Atlas {
     py = 34
 }
 
+if next(SMODS.find_mod("ortalab")) then
+	SMODS.load_file("FusionVirtues.lua")()
+end
+
 SMODS.Atlas({
     key = 'fuseforce_consumables',
     path = 'Consumables.png',
@@ -133,6 +137,10 @@ local function is_fusionforce_recipe(fusion)
 	return fusion and type(fusion.result_joker) == "string" and fusion.result_joker:match("^j_fuseforce_") ~= nil
 end
 
+local function is_fusionjokers_recipe(fusion)
+	return fusion and type(fusion.result_joker) == "string" and fusion.result_joker:match("^j_fuse_") ~= nil
+end
+
 local function is_tsunami_recipe(fusion)
 	return fusion and type(fusion.result_joker) == "string" and fusion.result_joker:match("^j_tsun_") ~= nil
 end
@@ -142,7 +150,7 @@ local function is_gold_recipe(fusion)
 end
 
 local function uses_fusionforce_button_logic(fusion)
-	return is_fusionforce_recipe(fusion) or is_tsunami_recipe(fusion)
+	return is_fusionforce_recipe(fusion) or is_fusionjokers_recipe(fusion) or is_tsunami_recipe(fusion)
 end
 
 local function recipe_counts_for_wiggle(fusion)
@@ -622,6 +630,7 @@ SMODS.Joker {
     blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"spectral", "hand_type", "six", "generation", "rank"},
     atlas = "fuseforce_jokers",
     pos = {x = 0, y = 0},
     artist_credits = {'LunaAstraCassiopeia'},
@@ -675,19 +684,6 @@ FusionJokers.fusions:register_fusion {
     }, cost = 6, result_joker = "j_fuseforce_clairvoyant"
 }
 
-local G_FUNCS_skip_blind_ref=G.FUNCS.skip_blind
-G.FUNCS.skip_blind=function(e)
-    for i = 1, PowerPopTally do
-            add_tag(Tag("tag_double"))
-            ---marie was here
-    end
-    return G_FUNCS_skip_blind_ref(e)
-end
-
----this global is the nuumber of double tags to make, goes up by 1 when you gain powerpop and down by 1 when you lose powerpop.
----this is my elegant brute-force solution to the powerpop issues. -Marie
-PowerPopTally = 0
-
 SMODS.Joker {
     key = "power_pop",
     name = "Power Pop",
@@ -698,56 +694,50 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = false,
 	perishable_compat = true,
+	attributes = {"xmult", "food", "scaling", "generation", "tag", "skip"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 1, y = 0 },
     artist_credits = {'LunaAstraCassiopeia'},
     config = {
-        x_mult = 1,
         extra = {
             x_mult_mod = 0.3,
-            active = true,
+            tag = "tag_double",
 			joker1 = "j_diet_cola",
 			joker2 = "j_throwback"
         }
     },
-    update = function(self, card, dt)
-        card.ability.x_mult = 1 + G.GAME.skips*card.ability.extra.x_mult_mod
-    end,
     loc_vars = function(self,info_queue,card)
     return {
         vars = {
-            card.ability.x_mult,
+            1 + G.GAME.skips * card.ability.extra.x_mult_mod,
             card.ability.extra.x_mult_mod,
             localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'}, 
             localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
         }
     }
     end,
-    add_to_deck = function(self,card,from_debuff)
-        PowerPopTally = PowerPopTally + 1
-    end,
-    remove_from_deck = function(self,card,from_debuff)
-        PowerPopTally = PowerPopTally - 1
-    end,
     calculate = function(self,card,context)
-        if context.joker_main then
-            if card.ability.x_mult > 1 then
-                return {
-                    message = localize{type='variable',key='a_xmult',vars={card.ability.x_mult}},
-                    Xmult_mod = card.ability.x_mult
-                }
-            end
-        elseif context.skip_blind then
+        if context.joker_main and 1 + G.GAME.skips * card.ability.extra.x_mult_mod > 1 then
+            return {
+                x_mult = 1 + G.GAME.skips * card.ability.extra.x_mult_mod
+            }
+        end
+        if context.tag_added and not context.blueprint and not context.retrigger_joker then
+            card.ability.extra.tag = context.tag_added.key
+        end
+        if context.skip_blind and not context.blueprint and not context.retrigger_joker then
             G.E_MANAGER:add_event(Event({
-                func = function() 
-                    card_eval_status_text(card, 'extra', nil, nil, nil, {
-                        message = localize{type = 'variable', key = 'a_xmult', vars = {card.ability.x_mult}},
+                func = (function() 
+                    add_tag(Tag(card.ability.extra.tag))
+                        card_eval_status_text(card, 'extra', nil, nil, nil, {
+                            message = localize{type = 'variable', key = 'a_xmult', vars = {1 + G.GAME.skips * card.ability.extra.x_mult_mod}},
                             colour = G.C.RED,
-                        card = card
-                    })
-                    card.ability.extra.active = true
+                            card = card
+                        })
                     return true
-                end}))
+                end)
+            }))
+            return nil, true -- This is for Joker retrigger purposes
         end
     end
 }
@@ -769,6 +759,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"mult", "rank"},
     atlas = "fuseforce_jokers",
     pos = {x = 2, y = 0},
     artist_credits = {'LunaAstraCassiopeia'},
@@ -814,7 +805,7 @@ FusionJokers.fusions:register_fusion {
 
 SMODS.Joker {
     key = "rewards_card",
-    name = "RewardsCard",
+    name = "Rewards Card",
     rarity = "fuse_fusion",
     cost = 11,
 	unlocked = true,
@@ -822,6 +813,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"sell_value", "passive", "economy"},
     atlas = "fuseforce_jokers",
     pos = {x = 3, y = 0},
     artist_credits = {'LunaAstraCassiopeia'},
@@ -898,6 +890,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"mult", "ace", "chips", "enhancements", "generation", "rank"},
     atlas = "fuseforce_jokers",
     pos = {x = 4, y = 0},
     artist_credits = {'LunaAstraCassiopeia'},
@@ -990,6 +983,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"tarot", "planet", "passive", "generation"},
     atlas = "fuseforce_jokers",
     pos = {x = 5, y = 0},
     artist_credits = {'LunaAstraCassiopeia'},
@@ -1049,10 +1043,7 @@ FusionJokers.fusions:register_fusion {
 local refisface = Card.is_face
 function Card:is_face(from_boss)
     if self.debuff and not from_boss then return end
-    if next(find_joker('j_fuseforce_prosopagnosia')) then
-        return true
-    end
-    return refisface(self, from_boss)
+    return refisface(self, from_boss) or (self:get_id() and (next(SMODS.find_card("j_fuseforce_prosopagnosia")) or next(SMODS.find_card("j_fuseforce_sticker")) ) )
 end
 
 SMODS.Joker {
@@ -1065,6 +1056,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"modify_card", "discard", "passive", "face", "economy"},
     atlas = "fuseforce_jokers",
     pos = {x = 6, y = 0},
     artist_credits = {'LunaAstraCassiopeia'},
@@ -1086,14 +1078,12 @@ SMODS.Joker {
     end,
     calculate = function(self, card, context)
         if context.discard then
-            if context.other_card:is_face() then
-                ease_dollars(card.ability.extra.dollars)
-                return {
-                    message = localize('$')..card.ability.extra.dollars,
-                    colour = G.C.MONEY,
-                    card = card
-                }
-            end
+            ease_dollars(card.ability.extra.dollars)
+            return {
+                message = localize('$')..card.ability.extra.dollars,
+                colour = G.C.MONEY,
+                card = card
+            }
         end
     end
 }
@@ -1115,6 +1105,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = false,
 	perishable_compat = false,
+	attributes = {"food", "hand_type", "chips", "scaling"},
     atlas = "fuseforce_jokers",
     pos = {x = 8, y = 0},
     artist_credits = {'Minus'},
@@ -1205,6 +1196,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = false,
+	attributes = {"mult", "hand_type", "chips", "scaling"},
     atlas = "fuseforce_jokers",
     pos = {x = 7, y = 0},
     artist_credits = {'LunaAstraCassiopeia'},
@@ -1270,6 +1262,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"mult", "xmult", "passive", "ten", "four", "chips", "xchips", "rank", "hands"},
     atlas = "fuseforce_jokers",
     pos = {x = 9, y = 0},
     artist_credits = {'Minus'},
@@ -1338,6 +1331,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = false,
 	perishable_compat = true,
+	attributes = {"mult", "food", "chips"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 0, y = 1 },
     artist_credits = {'gappie'},
@@ -1417,6 +1411,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = false,
+	attributes = {"mult", "scaling", "tarot", "generation"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 1, y = 1 },
     artist_credits = {'Minus'},
@@ -1492,6 +1487,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"full_deck", "enhancements", "chips", "generation"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 2, y = 1 },
     artist_credits = {'gappie'},
@@ -1588,6 +1584,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"retrigger", "face"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 3, y = 1 },
     artist_credits = {'Minus'},
@@ -1657,6 +1654,7 @@ SMODS.Joker {
 	blueprint_compat = false,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"hand_size", "discard", "passive", "hands"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 4, y = 1 },
     artist_credits = {'gappie'},
@@ -1713,6 +1711,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"mult", "chips"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 5, y = 1 },
     artist_credits = {'Minus'},
@@ -1771,6 +1770,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = false,
+	attributes = {"xmult", "chips", "scaling"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 6, y = 5 },
 	soul_pos = { x = 6, y = 6,
@@ -1838,6 +1838,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"chance", "hand_type", "discard", "space"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 7, y = 1 },
     artist_credits = {'gappie'},
@@ -1898,6 +1899,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"xmult", "chance", "food", "scaling"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 8, y = 1 },
     artist_credits = {'gappie'},
@@ -1980,6 +1982,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = false,
+	attributes = {"xmult", "destroy_card", "sell_value", "scaling"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 9, y = 1 },
     artist_credits = {'gappie'},
@@ -2061,6 +2064,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"chips", "scaling", "boss_blind"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 0, y = 2 },
     artist_credits = {'Minus'},
@@ -2124,6 +2128,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"discard", "chips", "scaling", "economy"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 2, y = 2 },
     artist_credits = {'Minus'},
@@ -2210,6 +2215,7 @@ SMODS.Joker {
 	blueprint_compat = false,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"hand_type", "passive"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 3, y = 2 },
     artist_credits = {'Minus'},
@@ -2319,17 +2325,6 @@ FusionJokers.fusions:register_fusion {
 	}, cost = 8, result_joker = "j_fuseforce_four_inch_gap"
 }
 
-local function stolen_tsun_randsuit(a)
-	if a == 2 then
-		local j = pseudorandom_element(SMODS.Suits, pseudoseed("something"))
-		local k = pseudorandom_element(SMODS.Suits, pseudoseed("something"))
-		return j.name, k.name
-	else
-		local j = pseudorandom_element(SMODS.Suits, pseudoseed("something"))
-		return j.name
-	end
-end
-
 local function reset_fuseforce_cavepainting_card()
     G.GAME.current_round.fuseforce_cavepainting_card = { suit = 'Spades' }
     local valid_cavepainting_cards = {}
@@ -2355,6 +2350,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"xmult", "hand_type", "suit"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 4, y = 2 },
     artist_credits = {'Minus'},
@@ -2423,6 +2419,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"xmult", "joker", "sell_value", "scaling", "skip", "economy"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 0, y = 3 },
     artist_credits = {'Minus'},
@@ -2499,6 +2496,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"copying"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 5, y = 2 },
     artist_credits = {'Minus'},
@@ -2550,6 +2548,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"xmult", "modify_card", "enhancements", "chips", "generation"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 2, y = 3 },
     artist_credits = {'Minus'},
@@ -2651,6 +2650,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"destroy_card", "discard", "hands", "economy"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 3, y = 3 },
     artist_credits = {'Minus'},
@@ -2721,6 +2721,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"chance", "eight", "tarot", "generation", "rank", "editions"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 4, y = 3 },
     artist_credits = {'Minus'},
@@ -2834,6 +2835,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = false,
+	attributes = {"xmult", "suit", "hearts", "diamonds", "spades", "clubs", "modify_card", "scaling"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 7, y = 2 },
     artist_credits = {'Minus'},
@@ -2919,6 +2921,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"joker_slot", "mult", "xmult", "retrigger", "scaling"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 4, y = 4 },
     artist_credits = {'Minus'},
@@ -2984,6 +2987,7 @@ SMODS.Joker {
 	blueprint_compat = false,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"xmult", "enhancements", "economy"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 1, y = 3 },
     artist_credits = {'Minus'},
@@ -3062,6 +3066,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"xmult", "hand_size", "rank", "king", "modify_card", "enhancements", "face"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 2, y = 4 },
     artist_credits = {'Minus'},
@@ -3165,6 +3170,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"xmult", "food", "discard", "scaling"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 3, y = 4 },
     artist_credits = {'Minus'},
@@ -3220,6 +3226,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"two", "three", "four", "five", "rank", "retrigger", "food", "scaling"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 9, y = 2 },
     artist_credits = {'Minus'},
@@ -3313,6 +3320,7 @@ SMODS.Joker {
     blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"xmult", "suit", "full_deck", "enhancements"},
     atlas = "fuseforce_jokers",
     pos = {x = 8, y = 2},
     artist_credits = {'Minus'},
@@ -3410,6 +3418,7 @@ SMODS.Joker {
     blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"mult", "suit", "discard", "scaling"},
     atlas = "fuseforce_jokers",
     pos = {x = 7, y = 3},
     artist_credits = {'Minus'},
@@ -3531,6 +3540,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"mult", "xmult", "tarot", "spectral", "scaling"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 5, y = 4 },
     artist_credits = {'Minus'},
@@ -3592,6 +3602,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"ace", "hand_type", "tarot", "spectral", "generation", "rank"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 5, y = 5 },
     soul_pos = { x = 5, y = 6 },
@@ -3847,6 +3858,7 @@ SMODS.Joker {
 	blueprint_compat = false,
 	eternal_compat = true,
 	perishable_compat = false,
+	attributes = {"joker_slot", "scaling"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 6, y = 4 },
     artist_credits = {'Minus'},
@@ -3947,6 +3959,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"xmult", "jack", "discard", "reset", "rank", "hand_size", "scaling"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 7, y = 4 },
     artist_credits = {'Minus'},
@@ -4030,6 +4043,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = false,
+	attributes = {"two", "chips", "xchips", "rank", "scaling"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 8, y = 4 },
     display_size = { w = 71 * 0.7, h = 95 * 0.7 },
@@ -4104,6 +4118,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"chance", "mult", "xmult", "chips", "economy"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 6, y = 2 },
     artist_credits = {'Minus'},
@@ -4161,6 +4176,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"joker", "generation"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 9, y = 4 },
     artist_credits = {'Minus'},
@@ -4248,6 +4264,7 @@ SMODS.Joker {
 	blueprint_compat = false,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"mod_chance", "full_deck", "six", "nine", "rank", "economy"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 8, y = 3 },
     artist_credits = {'Minus'},
@@ -4316,20 +4333,20 @@ SMODS.Joker {
 	key = "sticker",
 	name = "Sticker Joker",
 	rarity = "fuse_fusion",
-	cost = 16,
+	cost = 22,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"xmult", "modify_card", "passive", "face"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 6, y = 1 },
     artist_credits = {'Minus'},
     config = {
 		extra = {
-			x_mult = 2,
-            repetitions = 2,
-			joker1 = "j_hanging_chad",
+			x_mult = 1.5,
+			joker1 = "j_pareidolia",
 			joker2 = "j_photograph"
     	}
 	},
@@ -4337,47 +4354,25 @@ SMODS.Joker {
 	return {
 		vars = {
 			card.ability.extra.x_mult,
-            card.ability.extra.repetitions,
     		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'},
     		localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
 		}
 	}
     end,
 	calculate = function(self, card, context)
-        if context.repetition and context.cardarea == G.play and context.other_card == context.scoring_hand[1] then
-            local is_only_face = 1
-            for _, scored_card in ipairs(context.scoring_hand) do
-                if not scored_card:is_face() then
-                    is_only_face = 0
-                    break
-                end
-            end
+        if context.individual and context.cardarea == G.play and context.other_card ~= context.scoring_hand[1] then
             return {
-                repetitions = card.ability.extra.repetitions + is_only_face
+                x_mult = card.ability.extra.x_mult
             }
-        end
-        if context.individual and context.cardarea == G.play and context.other_card:is_face() then
-            local is_first_face = false
-            for i = 1, #context.scoring_hand do
-                if context.scoring_hand[i]:is_face() then
-                    is_first_face = context.scoring_hand[i] == context.other_card
-                    break
-                end
-            end
-            if is_first_face then
-                return {
-                    x_mult = card.ability.extra.x_mult
-                }
-            end
         end
     end
 }
 
 FusionJokers.fusions:register_fusion {
 	jokers = {
-		{ name = "j_hanging_chad" },
+		{ name = "j_pareidolia" },
 		{ name = "j_photograph" },
-	}, cost = 7, result_joker = "j_fuseforce_sticker"
+	}, cost = 12, result_joker = "j_fuseforce_sticker"
 }
 
 SMODS.Joker {
@@ -4390,6 +4385,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"xmult", "scaling"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 5, y = 3 },
     artist_credits = {'Minus'},
@@ -4452,6 +4448,7 @@ SMODS.Joker {
 	blueprint_compat = false,
 	eternal_compat = true,
 	perishable_compat = true,
+	attributes = {"passive", "editions"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 1, y = 2 },
     artist_credits = {'Minus'},
@@ -4479,13 +4476,14 @@ SMODS.Joker {
             local shop_card = context.card
             if shop_card and not shop_card.edition and shop_card.ability.set == 'Joker' then
                 for _, owned in ipairs(G.jokers.cards) do
-                    if (owned and owned.config and owned.config.center and shop_card.config.center.key == owned.config.center.key)
-                    or (owned and owned.config and owned.config.center and 
-                    (owned.config.center.config.rarity == 5
-                    or owned.config.center.rarity == "fuse_fusion"
-                    or owned.config.center.rarity == "fuseforce_gold_fusion"
-                    or owned.config.center.rarity == "tsun_gold_fusion"
-                    ) and (
+                    if (owned and owned.config and owned.config.center and shop_card.config.center.key == owned.config.center.key) or
+--                    (owned and owned.config and owned.config.center and
+--                    (owned.config.center.config.rarity == 5
+--                    or owned.config.center.rarity == "fuse_fusion"
+--                    or owned.config.center.rarity == "fuseforce_gold_fusion"
+--                    or owned.config.center.rarity == "tsun_gold_fusion" )
+                    (owned and owned.config and owned.config.center and owned.config.center.key and string.find(owned.config.center.key, "j_fuseforce_", 1, true)
+                    and (
                     shop_card.config.center.key == owned.config.center.config.extra.joker1
                     or shop_card.config.center.key == owned.config.center.config.extra.joker2
                     or shop_card.config.center.key == owned.config.center.config.extra.joker3)) then
@@ -4513,6 +4511,640 @@ FusionJokers.fusions:register_fusion {
 		{ name = "j_ring_master" },
 		{ name = "j_invisible" },
 	}, cost = 5, result_joker = "j_fuseforce_shadowman"
+}
+
+SMODS.Joker {
+	key = "gargoyle",
+	name = "Gargoyle",
+	rarity = "fuse_fusion",
+	cost = 20,
+	unlocked = true,
+	discovered = false,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	attributes = {"full_deck", "mult", "xmult", "enhancements"},
+	atlas = "fuseforce_jokers",
+	pos = { x = 9, y = 3 },
+    artist_credits = {'Minus'},
+    config = {
+		extra = {	
+			mult = 1,
+			x_mult = 2,
+			joker1 = "j_idol",
+			joker2 = "j_stone"
+    	}
+	},
+    loc_vars = function(self, info_queue, card)
+	local stone_tally = 0
+    if G.playing_cards then
+        for _, playing_card in ipairs(G.playing_cards) do
+            if SMODS.has_enhancement(playing_card, 'm_stone') then
+                stone_tally = stone_tally + 1
+            end
+        end
+    end
+    return {
+		vars = { 
+    		card.ability.extra.mult,
+			card.ability.extra.mult * stone_tally,
+			card.ability.extra.x_mult,
+    		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'}, 
+    		localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
+		}
+	}
+    end,
+    calculate = function(self, card, context)
+    	if context.individual and context.cardarea == G.play and SMODS.has_enhancement(context.other_card, 'm_stone') then
+	    local stone_tally = 0
+    		for _, playing_card in ipairs(G.playing_cards) do
+                if SMODS.has_enhancement(playing_card, 'm_stone') then
+                    stone_tally = stone_tally + 1
+                end
+            end
+        return {
+            mult = card.ability.extra.mult * stone_tally,
+            x_mult = card.ability.extra.x_mult
+        }
+        end
+    end
+}		
+
+FusionJokers.fusions:register_fusion {
+	jokers = {
+		{ name = "j_idol" },
+		{ name = "j_stone" },
+	}, cost = 8, result_joker = "j_fuseforce_gargoyle"
+}
+
+SMODS.Joker {
+	key = "ratio_road",
+	name = "Ratio Road",
+	rarity = "fuse_fusion",
+	cost = 25,
+	unlocked = true,
+	discovered = false,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	attributes = {"ace", "two", "three", "five", "eight", "rank", "mult", "xmult", "full_deck", "enhancements"},
+	atlas = "fuseforce_jokers",
+	pos = { x = 0, y = 8 },
+    artist_credits = {'Minus'},
+    config = {
+		extra = {	
+			mult = 1,
+			x_mult = 1,
+			joker1 = "j_drivers_license",
+			joker2 = "j_fibonacci"
+    	}
+	},
+    loc_vars = function(self, info_queue, card)
+	local enhanced_tally = 0
+    for _, playing_card in pairs(G.playing_cards or {}) do
+        if next(SMODS.get_enhancements(playing_card)) then
+                enhanced_tally = enhanced_tally + 1
+        end
+    end
+    return {
+		vars = { 
+    		card.ability.extra.mult,
+			card.ability.extra.mult * enhanced_tally,
+			card.ability.extra.x_mult,
+    		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'}, 
+    		localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
+		}
+	}
+    end,
+    calculate = function(self, card, context)
+    	if context.individual and context.cardarea == G.play then
+	        local enhanced_tally = 0
+            for _, playing_card in pairs(G.playing_cards) do
+                if next(SMODS.get_enhancements(playing_card)) then
+                    enhanced_tally = enhanced_tally + 1
+                end
+            end
+            if context.other_card:get_id() == 2 or
+                context.other_card:get_id() == 3 or
+                context.other_card:get_id() == 5 or
+                context.other_card:get_id() == 8 or
+                context.other_card:get_id() == 14 then
+                return {
+                    mult = card.ability.extra.mult * enhanced_tally
+                }
+            end
+        end
+        if context.joker_main then
+	        local enhanced_tally = 0
+            for _, playing_card in pairs(G.playing_cards) do
+                if next(SMODS.get_enhancements(playing_card)) then
+                    enhanced_tally = enhanced_tally + 1
+                end
+            end
+            if enhanced_tally >= 144 then
+                card.ability.extra.xmult = 8
+            elseif enhanced_tally >= 89 then
+                card.ability.extra.xmult = 7
+            elseif enhanced_tally >= 55 then
+                card.ability.extra.xmult = 6
+            elseif enhanced_tally >= 34 then
+                card.ability.extra.xmult = 5
+            elseif enhanced_tally >= 21 then
+                card.ability.extra.xmult = 4
+            elseif enhanced_tally >= 13 then
+                card.ability.extra.xmult = 3
+            elseif enhanced_tally >= 8 then
+                card.ability.extra.xmult = 2
+            end
+            return {
+                xmult = card.ability.extra.xmult
+            }
+        end
+    end
+}		
+
+FusionJokers.fusions:register_fusion {
+	jokers = {
+		{ name = "j_drivers_license" },
+		{ name = "j_fibonacci" },
+	}, cost = 10, result_joker = "j_fuseforce_ratio_road"
+}
+
+SMODS.Joker {
+	key = "ransom",
+	name = "Ransom Note",
+	rarity = "fuse_fusion",
+	cost = 20,
+	unlocked = true,
+	discovered = false,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	attributes = {"hand_type", "discard", "rank", "economy"},
+	atlas = "fuseforce_jokers",
+	pos = { x = 4, y = 8 },
+    artist_credits = {'Minus'},
+    config = {
+		extra = {	
+			dollars = 5,
+			poker_hand = 'High Card',
+			id = '14',
+			rank = 'Ace',
+			joker1 = "j_mail",
+			joker2 = "j_todo_list"
+    	}
+	},
+    loc_vars = function(self, info_queue, card)
+    return {
+		vars = { 
+    		card.ability.extra.dollars,
+			localize(card.ability.extra.poker_hand, 'poker_hands'),
+            localize(card.ability.extra.rank, 'ranks'),
+    		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'}, 
+    		localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
+		}
+	}
+    end,
+    calculate = function(self, card, context)
+    	if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint and not context.retrigger_joker then
+            local _poker_hands = {}
+            local ranks = {}
+            for handname, _ in pairs(G.GAME.hands) do
+                if SMODS.is_poker_hand_visible(handname) and handname ~= card.ability.extra.poker_hand then
+                    _poker_hands[#_poker_hands + 1] = handname
+                end
+            end
+            for _, playing_card in ipairs(G.playing_cards) do
+                if not SMODS.has_no_rank(playing_card) then
+                    ranks[#ranks + 1] = playing_card
+                end
+            end
+            local rank_card = pseudorandom_element(ranks, 'fuseforce_ransom')
+            card.ability.extra.poker_hand = pseudorandom_element(_poker_hands, 'fuseforce_ransom')
+                if rank_card then
+                    card.ability.extra.rank = rank_card.base.value
+                    card.ability.extra.id = rank_card.base.id
+                end
+            return {
+                message = localize('k_reset')
+            }
+        end
+        if (context.discard or (context.individual and context.cardarea == G.play)) and not context.other_card.debuff and context.other_card:get_id() == card.ability.extra.id then
+            G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + card.ability.extra.dollars
+            if context.scoring_name == card.ability.extra.poker_hand or G.FUNCS.get_poker_hand_info(G.hand.highlighted) == card.ability.extra.poker_hand then
+                return {
+                    dollars = card.ability.extra.dollars * 2,
+                    func = function() -- This is for timing purposes, it runs after the dollar manipulation
+                        G.E_MANAGER:add_event(Event({
+                            func = function()
+                                G.GAME.dollar_buffer = 0
+                                return true
+                            end
+                        }))
+                    end
+                }
+            else
+                return {
+                    dollars = card.ability.extra.dollars,
+                    func = function() -- This is for timing purposes, it runs after the dollar manipulation
+                        G.E_MANAGER:add_event(Event({
+                            func = function()
+                                G.GAME.dollar_buffer = 0
+                                return true
+                            end
+                        }))
+                    end
+                }
+            end
+        end
+    end,
+    set_ability = function(self, card, initial, delay_sprites)
+        local _poker_hands = {}
+        local ranks = {}
+        for handname, _ in pairs(G.GAME.hands) do
+            if SMODS.is_poker_hand_visible(handname) and handname ~= card.ability.extra.poker_hand then
+                _poker_hands[#_poker_hands + 1] = handname
+            end
+        end
+        if G.playing_cards then
+            for _, playing_card in ipairs(G.playing_cards) do
+                if not SMODS.has_no_rank(playing_card) then
+                    ranks[#ranks + 1] = playing_card
+                end
+            end
+        end
+        local rank_card = pseudorandom_element(ranks, 'fuseforce_ransom')
+        card.ability.extra.poker_hand = pseudorandom_element(_poker_hands, 'fuseforce_ransom')
+        if rank_card then
+            card.ability.extra.rank = rank_card.base.value
+            card.ability.extra.id = rank_card.base.id
+        end
+    end
+}		
+
+FusionJokers.fusions:register_fusion {
+	jokers = {
+		{ name = "j_mail" },
+		{ name = "j_todo_list" },
+	}, cost = 12, result_joker = "j_fuseforce_ransom"
+}
+
+SMODS.Joker {
+	key = "unlucky_cat",
+	name = "Unlucky Cat",
+	rarity = "fuse_fusion",
+	cost = 22,
+	unlocked = true,
+	discovered = false,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	attributes = {"mod_chance", "xmult", "enhancements", "scaling"},
+	atlas = "fuseforce_jokers",
+	pos = { x = 5, y = 8 },
+    artist_credits = {'Minus'},
+    config = {
+		extra = {	
+			x_mult = 1,
+			x_mult_lucky = 0.25,
+			x_mult_wheel = 0.50,
+			x_mult_glass = 0.75,
+			joker1 = "j_glass",
+			joker2 = "j_lucky_cat"
+    	}
+	},
+    loc_vars = function(self, info_queue, card)
+    return {
+		vars = {
+			card.ability.extra.x_mult,
+			card.ability.extra.x_mult_lucky,
+			card.ability.extra.x_mult_wheel,
+			card.ability.extra.x_mult_glass,
+    		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'}, 
+    		localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
+		}
+	}
+    end,
+    calculate = function(self, card, context)
+        if context.mod_probability and not context.blueprint and not context.retrigger_joker then
+            return {
+                numerator = context.numerator * 2
+            }
+        end
+    	if context.individual and context.cardarea == G.play and context.other_card.lucky_trigger and not context.blueprint and not context.retrigger_joker then
+            card.ability.extra.x_mult = card.ability.extra.x_mult + card.ability.extra.x_mult_lucky
+            return {
+                message = localize('k_upgrade_ex'),
+                colour = G.C.MULT,
+                message_card = card
+            }
+        end
+        if context.remove_playing_cards and not context.blueprint and not context.retrigger_joker then
+            local glass_cards = 0
+            for _, removed_card in ipairs(context.removed) do
+                if removed_card.shattered then glass_cards = glass_cards + 1 end
+            end
+            if glass_cards > 0 then
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        G.E_MANAGER:add_event(Event({
+                            func = function()
+                                -- See note about SMODS Scaling Manipulation on the wiki
+                                card.ability.extra.x_mult = card.ability.extra.x_mult +
+                                    card.ability.extra.x_mult_glass * glass_cards
+                                return true
+                            end
+                        }))
+                        SMODS.calculate_effect(
+                            {
+                                message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.x_mult +
+                                card.ability.extra.x_mult_glass * glass_cards } }
+                            }, card)
+                        return true
+                    end
+                }))
+                return nil, true -- This is for Joker retrigger purposes
+            end
+        end
+        --if context.using_consumeable and not context.blueprint and context.consumeable.config.center.key == 'c_hanged_man' then
+        if context.using_consumeable and not context.blueprint and not context.retrigger_joker then
+            local glass_cards = 0
+            for _, removed_card in ipairs(G.hand.highlighted) do
+                if SMODS.has_enhancement(removed_card, 'm_glass') then glass_cards = glass_cards + 1 end
+            end
+            if glass_cards > 0 then
+                card.ability.extra.x_mult = card.ability.extra.x_mult +
+                    card.ability.extra.x_mult_glass * glass_cards
+                return {
+                    message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.x_mult } }
+                }
+            end
+        end
+        if context.identifier and context.identifier == "wheel_of_fortune" and context.pseudorandom_result and context.result and not context.blueprint and not context.retrigger_joker then
+            card.ability.extra.x_mult = card.ability.extra.x_mult + card.ability.extra.x_mult_wheel
+            return {
+                message = localize('k_upgrade_ex'),
+                colour = G.C.MULT,
+                message_card = card
+            }
+        end
+        if context.joker_main then
+            return {
+                x_mult = card.ability.extra.x_mult
+            }
+        end
+    end
+}		
+
+FusionJokers.fusions:register_fusion {
+	jokers = {
+		{ name = "j_glass", merge_stat = "x_mult" },
+		{ name = "j_lucky_cat", merge_stat = "x_mult" },
+	}, cost = 10, merged_stat = "x_mult", result_joker = "j_fuseforce_unlucky_cat"
+}
+
+SMODS.Joker {
+	key = "sand",
+	name = "Sand Joker",
+	rarity = "fuse_fusion",
+	cost = 20,
+	unlocked = true,
+	discovered = false,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	attributes = {"mult", "xmult", "enhancements", "scaling"},
+	atlas = "fuseforce_jokers",
+	pos = { x = 6, y = 8 },
+    artist_credits = {'Minus'},
+    config = {
+		extra = {
+            mult = 5,
+			x_mult = 1,
+			x_mult_mod = 1,
+			joker1 = "j_glass",
+			joker2 = "j_erosion"
+    	}
+	},
+    loc_vars = function(self, info_queue, card)
+    return {
+		vars = {
+			card.ability.extra.mult,
+			card.ability.extra.mult * card.ability.extra.x_mult,
+			card.ability.extra.x_mult,
+			card.ability.extra.x_mult_mod,
+    		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'}, 
+    		localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
+		}
+	}
+    end,
+    calculate = function(self, card, context)
+        if context.remove_playing_cards and not context.blueprint and not context.retrigger_joker then
+            local glass_cards = 0
+            for _, removed_card in ipairs(context.removed) do
+                if removed_card.shattered then glass_cards = glass_cards + 1 end
+            end
+            if glass_cards > 0 then
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        G.E_MANAGER:add_event(Event({
+                            func = function()
+                                card.ability.extra.x_mult = card.ability.extra.x_mult +
+                                    card.ability.extra.x_mult_mod * glass_cards
+                                return true
+                            end
+                        }))
+                        SMODS.calculate_effect(
+                            {
+                                message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.x_mult +
+                                card.ability.extra.x_mult_mod * glass_cards } }
+                            }, card)
+                        return true
+                    end
+                }))
+                return nil, true -- This is for Joker retrigger purposes
+            end
+        end
+        --if context.using_consumeable and not context.blueprint and context.consumeable.config.center.key == 'c_hanged_man' then
+        if context.using_consumeable and not context.blueprint and not context.retrigger_joker then
+            local glass_cards = 0
+            for _, removed_card in ipairs(G.hand.highlighted) do
+                if SMODS.has_enhancement(removed_card, 'm_glass') then glass_cards = glass_cards + 1 end
+            end
+            if glass_cards > 0 then
+                card.ability.extra.x_mult = card.ability.extra.x_mult +
+                    card.ability.extra.x_mult_mod * glass_cards
+                return {
+                    message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.x_mult } }
+                }
+            end
+        end
+        if context.joker_main then
+            return {
+                mult = card.ability.extra.mult * card.ability.extra.x_mult,
+                x_mult = card.ability.extra.x_mult
+            }
+        end
+    end
+}		
+
+FusionJokers.fusions:register_fusion {
+	jokers = {
+		{ name = "j_glass", carry_stat = "x_mult" },
+		{ name = "j_erosion" },
+	}, cost = 8, result_joker = "j_fuseforce_sand"
+}
+
+SMODS.Joker {
+	key = "assassin",
+	name = "Assassin",
+	rarity = "fuse_fusion",
+	cost = 20,
+	unlocked = true,
+	discovered = false,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	attributes = {"discard", "face", "suit", "mult", "chips", "scaling", "economy"},
+	atlas = "fuseforce_jokers",
+	pos = { x = 8, y = 8 },
+    artist_credits = {'Minus'},
+    config = {
+		extra = {
+			chips = 0,
+			chips_mod = 3,
+			mult = 0,
+			mult_mod = 1,
+			dollars = 5,
+			count = 3,
+            suit = 'Spades',
+			joker1 = "j_faceless",
+			joker2 = "j_castle"
+    	}
+	},
+    loc_vars = function(self, info_queue, card)
+    local suit = card.ability.extra.suit
+    return {
+		vars = {
+    		card.ability.extra.chips,
+    		card.ability.extra.chips_mod,
+    		card.ability.extra.mult,
+    		card.ability.extra.mult_mod,
+    		card.ability.extra.dollars,
+    		card.ability.extra.dollars * 2,
+    		card.ability.extra.count,
+			localize(suit, 'suits_singular'),
+            colours = { G.C.SUITS[suit] },
+    		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'}, 
+    		localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
+		}
+	}
+    end,
+    set_ability = function(self, card, initial, delay_sprites)
+        if G.playing_cards then
+            local valid_assassin_cards = {}
+            for _, playing_card in ipairs(G.playing_cards) do
+                if not SMODS.has_no_suit(playing_card) then
+                    valid_assassin_cards[#valid_assassin_cards + 1] = playing_card
+                end
+            end
+            local assassin_card = pseudorandom_element(valid_assassin_cards, 'fuseforce_assassin')
+            if assassin_card then
+                card.ability.extra.suit = assassin_card.base.suit
+            end
+        end
+    end,
+    calculate = function(self, card, context)
+    	if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint and not context.retrigger_joker then
+            local valid_assassin_cards = {}
+            for _, playing_card in ipairs(G.playing_cards) do
+                if not SMODS.has_no_suit(playing_card) then
+                    valid_assassin_cards[#valid_assassin_cards + 1] = playing_card
+                end
+            end
+            local assassin_card = pseudorandom_element(valid_assassin_cards, 'fuseforce_assassin')
+                if assassin_card then
+                    card.ability.extra.suit = assassin_card.base.suit
+                end
+--            return {
+--                message = localize('k_reset')
+--            }
+        end
+        if context.discard then
+            if context.other_card:is_suit(card.ability.extra.suit) and context.other_card:is_face() and not context.blueprint and not context.retrigger_joker and not context.other_card.debuff then
+                card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_mod
+                card:juice_up()
+--                return {
+--                    message = localize('k_upgrade_ex'),
+--                    colour = G.C.MULT
+--                }
+            end
+            if (context.other_card:is_suit(card.ability.extra.suit) or context.other_card:is_face()) and not context.blueprint and not context.retrigger_joker and not context.other_card.debuff then
+                card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_mod
+                card:juice_up()
+--                return {
+--                    message = localize('k_upgrade_ex'),
+--                    colour = G.C.CHIPS
+--                }
+            end
+            if context.other_card == context.full_hand[#context.full_hand] then
+                local face_cards = 0
+                local suit_cards = 0
+                local suit_face_cards = 0
+                for _, discarded_card in ipairs(context.full_hand) do
+                    if discarded_card:is_face() and discarded_card:is_suit(card.ability.extra.suit) then
+                        suit_face_cards = suit_face_cards + 1
+                    elseif discarded_card:is_face() and not discarded_card:is_suit(card.ability.extra.suit) then
+                        face_cards = face_cards + 1
+                    elseif discarded_card:is_suit(card.ability.extra.suit) and not discarded_card:is_face() then
+                        suit_cards = suit_cards + 1
+                    end
+                end
+                if suit_face_cards >= card.ability.extra.count then
+                    G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + card.ability.extra.dollars * 2
+                    return {
+                        dollars = card.ability.extra.dollars * 2,
+                        delay = 0.45,
+                        func = function() -- This is for timing purposes, it runs after the dollar manipulation
+                            G.E_MANAGER:add_event(Event({
+                                func = function()
+                                    G.GAME.dollar_buffer = 0
+                                    return true
+                                end
+                            }))
+                        end
+                    }
+                elseif suit_face_cards + face_cards + suit_cards >= card.ability.extra.count then
+                    G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + card.ability.extra.dollars
+                    return {
+                        dollars = card.ability.extra.dollars,
+                        delay = 0.45,
+                        func = function() -- This is for timing purposes, it runs after the dollar manipulation
+                            G.E_MANAGER:add_event(Event({
+                                func = function()
+                                    G.GAME.dollar_buffer = 0
+                                    return true
+                                end
+                            }))
+                        end
+                    }
+                end
+            end
+        end
+        if context.joker_main then
+            return {
+                chips = card.ability.extra.chips,
+                mult = card.ability.extra.mult
+            }
+        end
+    end
+}
+
+FusionJokers.fusions:register_fusion {
+	jokers = {
+		{ name = "j_faceless" },
+		{ name = "j_castle", carry_stat = "chips" },
+	}, cost = 10, result_joker = "j_fuseforce_assassin"
 }
 
 --Triple Fusions
@@ -4664,7 +5296,7 @@ SMODS.Joker {
             card.ability.extra.mult,
             card.ability.extra.xmult,
             card.ability.extra.dollars,
-            card.ability.extra.dollars * G.GAME.hands[card.ability.extra.type].played,
+            card.ability.extra.dollars * (G.GAME.hands[card.ability.extra.type].played + G.GAME.hands[card.ability.extra.type2].played),
             localize(card.ability.extra.type, 'poker_hands'),
             localize(card.ability.extra.type2, 'poker_hands'),
     		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'},
@@ -4728,7 +5360,7 @@ SMODS.Joker {
             card.ability.extra.mult,
             card.ability.extra.xmult,
             card.ability.extra.dollars,
-            card.ability.extra.dollars * G.GAME.hands[card.ability.extra.type].played,
+            card.ability.extra.dollars * (G.GAME.hands[card.ability.extra.type].played + G.GAME.hands[card.ability.extra.type2].played),
             localize(card.ability.extra.type, 'poker_hands'),
             localize(card.ability.extra.type2, 'poker_hands'),
     		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'},
@@ -4856,7 +5488,7 @@ SMODS.Joker {
             card.ability.extra.mult,
             card.ability.extra.xmult,
             card.ability.extra.dollars,
-            card.ability.extra.dollars * G.GAME.hands[card.ability.extra.type].played,
+            card.ability.extra.dollars * (G.GAME.hands[card.ability.extra.type].played + G.GAME.hands[card.ability.extra.type2].played),
             localize(card.ability.extra.type, 'poker_hands'),
             localize(card.ability.extra.type2, 'poker_hands'),
     		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'},
@@ -4920,7 +5552,7 @@ SMODS.Joker {
             card.ability.extra.mult,
             card.ability.extra.xmult,
             card.ability.extra.dollars,
-            card.ability.extra.dollars * G.GAME.hands[card.ability.extra.type].played,
+            card.ability.extra.dollars * (G.GAME.hands[card.ability.extra.type].played + G.GAME.hands[card.ability.extra.type2].played),
             localize(card.ability.extra.type, 'poker_hands'),
             localize(card.ability.extra.type2, 'poker_hands'),
     		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'},
@@ -5114,7 +5746,7 @@ SMODS.Joker {
 	},
     loc_vars = function(self, info_queue, card)
 		local numerator,
-        denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, 'scratch')
+        denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, 'moses')
 	return {
 		vars = {
 			card.ability.extra.x_mult,

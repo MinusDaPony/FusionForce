@@ -3,13 +3,13 @@
 	"name": "Fusion Force",
 	"display_name": "Fusion Force",
 	"author": ["Minus", "Potato", "LunaAstraCassiopeia", "amstd"],
-	"description": "Adds many new Fusion Jokers, including triple fusions. Also vouchers and a spectral to help with discovering and making fusions. Plus a deck and matching sleeve. Coding help and ideas from Luna and amstd where the first 20 fusions in the collection are mostly entirely their work, with additional art by Gappie and Luna. The spectral, vouchers, shop wiggle, and other technical parts are thanks to Potato who is a genius. Bonus thanks to Maratby who's Tsunami fusion mod inspired me to start coming up with fusion ideas, and got me into doing Balatro joker art. And to WingedCatGirl for maintaining the base fusion mod and making my mod possible. And lastly to Poxy who playtested the heck out of this mod!",
+	"description": "Adds many new Fusion Jokers, including triple fusions. Also vouchers and a spectral to help with discovering and making fusions. Plus a deck and matching sleeve. Extra fusions available with Ortalab. Coding help and ideas from Luna and amstd where the first 20 fusions in the collection are mostly entirely their work, with additional art by Gappie and Luna. The spectral, vouchers, shop wiggle, and other technical parts are thanks to Potato who is a genius. Bonus thanks to Maratby who's Tsunami fusion mod inspired me to start coming up with fusion ideas, and got me into doing Balatro joker art. And to WingedCatGirl for maintaining the base fusion mod and making my mod possible. And lastly to Poxy who playtested the heck out of this mod!",
 	"prefix": "fuseforce",
 	"main_file": "FusionForce.lua",
 	"priority": 0,
 	"badge_colour": "BD597A",
 	"badge_text_colour": "FFFFFF",
-	"version": "1.1.3",
+	"version": "1.2.0",
 	"dependencies": [
 		"Steamodded (>=1.0.0~BETA-0827a)", 
 		"FusionJokers"
