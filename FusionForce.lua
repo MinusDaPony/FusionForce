@@ -4477,16 +4477,15 @@ SMODS.Joker {
             if shop_card and not shop_card.edition and shop_card.ability.set == 'Joker' then
                 for _, owned in ipairs(G.jokers.cards) do
                     if (owned and owned.config and owned.config.center and shop_card.config.center.key == owned.config.center.key) or
---                    (owned and owned.config and owned.config.center and
---                    (owned.config.center.config.rarity == 5
---                    or owned.config.center.rarity == "fuse_fusion"
---                    or owned.config.center.rarity == "fuseforce_gold_fusion"
---                    or owned.config.center.rarity == "tsun_gold_fusion" )
-                    (owned and owned.config and owned.config.center and owned.config.center.key and string.find(owned.config.center.key, "j_fuseforce_", 1, true)
+                    (owned and owned.config and owned.config.center and not string.find(owned.config.center.key, "j_tsun_", 1, true) and
+                    (owned.config.center.config.rarity == 5
+                    or owned.config.center.rarity == "fuse_fusion"
+                    or owned.config.center.rarity == "fuseforce_gold_fusion"
+                    or owned.config.center.rarity == "tsun_gold_fusion")
                     and (
-                    shop_card.config.center.key == owned.config.center.config.extra.joker1
-                    or shop_card.config.center.key == owned.config.center.config.extra.joker2
-                    or shop_card.config.center.key == owned.config.center.config.extra.joker3)) then
+                    shop_card.config.center.key == owned.ability.extra.joker1
+                    or shop_card.config.center.key == owned.ability.extra.joker2
+                    or shop_card.config.center.key == owned.ability.extra.joker3)) then
                         shop_card:set_edition("e_negative", true)
                         shop_card.ability.couponed = true
                         shop_card:set_cost()

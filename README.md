@@ -12,6 +12,10 @@ Cross-Mod content:
 
 ## changelog
 
+V1.2.1
+
+Shadowman compatibility with Fusion Jokers restored. I'm a dummy.
+
 V1.2.0
 
 Merged with the Ortalab Fusion Virtues mod. Added attributes to all jokers. Fixed 4 triple fusions not listing how much money they give properly. Clarified Shadowman ability. Fixed Shadowman crashing if you had fusions from other mods. Fixed FusionJokers fusions not working right in cases of wiggling and the Shadow Spectral. Fixed a long overdue bug in Power Pop, remaking most of the code, so now it no longer can trigger outside of the game it's fused in. Fixed bug where Prosopagnosia was just simply not making cards act as face cards as intended, no idea when this code stopped working.
