@@ -1,0 +1,244 @@
+[manifest]
+version = "1.3.0"
+dump_lua = true
+priority = 1
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_joker = 1},'''
+position = "at"
+payload = '''
+link_config = {j_joker = 1, j_fuseforce_fused = 1, j_fuse_three_jimbos = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_mime = 1},'''
+position = "at"
+payload = '''
+link_config = {j_mime = 1, j_fuseforce_oscar_best_actor = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_raised_fist = 1},'''
+position = "at"
+payload = '''
+link_config = {j_raised_fist = 1, j_fuseforce_reach_the_stars = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_egg = 1},'''
+position = "at"
+payload = '''
+link_config = {j_egg = 1, j_fuse_golden_egg = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_burglar = 1},'''
+position = "at"
+payload = '''
+link_config = {j_burglar = 1, j_fuseforce_dye_pack = 1, j_tsun_asset_liquidation = 1, j_tsun_gold_asset_liquidation = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_faceless = 1},'''
+position = "at"
+payload = '''
+link_config = {j_faceless = 1, j_fuseforce_prosopagnosia = 1, j_fuseforce_assassin = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_red_card = 1},'''
+position = "at"
+payload = '''
+link_config = {j_red_card = 1, j_fuseforce_bribery_clown = 1, j_fuseforce_rgb = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_hallucination = 1},'''
+position = "at"
+payload = '''
+link_config = {j_hallucination = 1, j_fuseforce_bribery_clown = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_fortune_teller = 1},'''
+position = "at"
+payload = '''
+link_config = {j_fortune_teller = 1, j_fuseforce_paranormal = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_juggler = 1},'''
+position = "at"
+payload = '''
+link_config = {j_juggler = 1, j_fuse_flip_flop = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_golden = 1},'''
+position = "at"
+payload = '''
+link_config = {j_golden = 1, j_fuse_golden_egg = 1, j_fuseforce_golden_calf = 1, j_fuseforce_gold_golden_calf = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_baseball = 1},'''
+position = "at"
+payload = '''
+link_config = {j_baseball = 1, j_fuseforce_card_collection = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_trading = 1},'''
+position = "at"
+payload = '''
+link_config = {j_trading = 1, j_fuseforce_dye_pack = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_flash = 1},'''
+position = "at"
+payload = '''
+link_config = {j_flash = 1, j_fuse_collectible_chaos_card = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_campfire = 1},'''
+position = "at"
+payload = '''
+link_config = {j_campfire = 1, j_fuseforce_golden_calf = 1, j_fuseforce_gold_golden_calf = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_certificate = 1},'''
+position = "at"
+payload = '''
+link_config = {j_certificate = 1, j_fuseforce_masters_degree = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_throwback = 1},'''
+position = "at"
+payload = '''
+link_config = {j_throwback = 1, j_fuseforce_power_pop = 1, j_fuseforce_skipper = 1, j_fuseforce_gold_skipper = 1, j_tsun_vaporwave = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_hanging_chad = 1},'''
+position = "at"
+payload = '''
+link_config = {j_hanging_chad = 1, j_fuseforce_cut_and_pasted = 1, j_tsun_fractured_floodgate = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_bloodstone = 1},'''
+position = "at"
+payload = '''
+link_config = {j_bloodstone = 1, j_fuse_heart_paladin = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_merry_andy = 1},'''
+position = "at"
+payload = '''
+link_config = {j_merry_andy = 1, j_fuseforce_optimist = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_stuntman = 1},'''
+position = "at"
+payload = '''
+link_config = {j_stuntman = 1, j_tsun_escape_artist = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_brainstorm = 1},'''
+position = "at"
+payload = '''
+link_config = {j_brainstorm = 1, j_fuseforce_giant_shoulders = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_drivers_license = 1},'''
+position = "at"
+payload = '''
+link_config = {j_drivers_license = 1, j_fuse_commercial_driver = 1, j_fuseforce_ratio_road = 1, j_tsun_hygiene_card = 1},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''link_config = {j_burnt = 1},'''
+position = "at"
+payload = '''
+link_config = {j_burnt = 1, j_fuseforce_solar_flare_joker = 1},
+'''
+match_indent = true

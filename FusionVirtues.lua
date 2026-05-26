@@ -91,7 +91,7 @@ SMODS.Joker {
 	attributes = {"chance", "xmult", "hearts", "suit"},
     atlas = "fuseforce_orta_jokers",
     pos = {x = 1, y = 0},
-    artist_credits = {'Minus'},
+    artist_credits = {'minus'},
     config = {
 		extra = {
             suit = "Hearts",
@@ -154,7 +154,7 @@ SMODS.Joker {
 	attributes = {"modify_card", "chips", "perma_bonus", "spades", "suit"},
     atlas = "fuseforce_orta_jokers",
     pos = {x = 2, y = 0},
-    artist_credits = {'Minus'},
+    artist_credits = {'minus'},
     config = {
 		extra = {
             suit = "Spades",
@@ -524,7 +524,7 @@ SMODS.Joker {
 	attributes = {"hand_size", "discard"},
     atlas = "fuseforce_orta_jokers",
     pos = {x = 2, y = 1},
-    artist_credits = {'Minus'},
+    artist_credits = {'minus'},
     config = {
 		extra = {
             hand_size = 4,
@@ -601,7 +601,7 @@ SMODS.Joker {
 	attributes = {"chips", "tarot", "spectral", "planet", "joker", "scaling"},
     atlas = "fuseforce_orta_jokers",
     pos = {x = 4, y = 1},
-    artist_credits = {'Minus'},
+    artist_credits = {'minus'},
     config = {
 		extra = {
             chips = 25,
@@ -751,7 +751,7 @@ FusionJokers.fusions:register_fusion {
 
 SMODS.Joker {
     key = "orta_necromancer",
-    name = "Necromancer",
+    name = "Lich",
     rarity = "fuse_fusion",
     cost = 20,
 	unlocked = true,
@@ -762,7 +762,7 @@ SMODS.Joker {
 	attributes = {"on_sell", "boss_blind", "joker_slot"},
     atlas = "fuseforce_orta_jokers",
     pos = {x = 1, y = 3},
-    artist_credits = {'Minus'},
+    artist_credits = {'minus'},
     config = {
 		extra = {
             joker1 = "j_ortalab_grave_digger",
