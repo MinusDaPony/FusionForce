@@ -39,7 +39,7 @@ target = '=[SMODS partner "partner.lua"]'
 pattern = '''link_config = {j_egg = 1},'''
 position = "at"
 payload = '''
-link_config = {j_egg = 1, j_fuse_golden_egg = 1},
+link_config = {j_egg = 1, j_fuse_golden_egg = 1, j_fuseforce_easter_egg = 1, j_fuseforce_legendary_poxy = 1},
 '''
 match_indent = true
 
@@ -99,7 +99,7 @@ target = '=[SMODS partner "partner.lua"]'
 pattern = '''link_config = {j_juggler = 1},'''
 position = "at"
 payload = '''
-link_config = {j_juggler = 1, j_fuse_flip_flop = 1},
+link_config = {j_juggler = 1, j_fuse_flip_flop = 1, j_fuseforce_colour_guard = 1},
 '''
 match_indent = true
 
@@ -109,7 +109,7 @@ target = '=[SMODS partner "partner.lua"]'
 pattern = '''link_config = {j_golden = 1},'''
 position = "at"
 payload = '''
-link_config = {j_golden = 1, j_fuse_golden_egg = 1, j_fuseforce_golden_calf = 1, j_fuseforce_gold_golden_calf = 1},
+link_config = {j_golden = 1, j_fuse_golden_egg = 1, j_fuseforce_golden_calf = 1, j_fuseforce_gold_golden_calf = 1, j_fuseforce_midas_joker = 1, j_fuseforce_legendary_poxy = 1},
 '''
 match_indent = true
 
@@ -169,7 +169,7 @@ target = '=[SMODS partner "partner.lua"]'
 pattern = '''link_config = {j_throwback = 1},'''
 position = "at"
 payload = '''
-link_config = {j_throwback = 1, j_fuseforce_power_pop = 1, j_fuseforce_skipper = 1, j_fuseforce_gold_skipper = 1, j_tsun_vaporwave = 1},
+link_config = {j_throwback = 1, j_fuseforce_power_pop = 1, j_fuseforce_skipper = 1, j_fuseforce_gold_skipper = 1, j_fuseforce_legendary_poxy = 1, j_tsun_vaporwave = 1},
 '''
 match_indent = true
 
@@ -209,7 +209,7 @@ target = '=[SMODS partner "partner.lua"]'
 pattern = '''link_config = {j_stuntman = 1},'''
 position = "at"
 payload = '''
-link_config = {j_stuntman = 1, j_tsun_escape_artist = 1},
+link_config = {j_stuntman = 1, j_fuseforce_comeback = 1, j_tsun_escape_artist = 1},
 '''
 match_indent = true
 
@@ -219,7 +219,7 @@ target = '=[SMODS partner "partner.lua"]'
 pattern = '''link_config = {j_brainstorm = 1},'''
 position = "at"
 payload = '''
-link_config = {j_brainstorm = 1, j_fuseforce_giant_shoulders = 1},
+link_config = {j_brainstorm = 1, j_fuseforce_two_heads = 1, j_fuseforce_gold_two_heads = 1},
 '''
 match_indent = true
 
@@ -239,6 +239,6 @@ target = '=[SMODS partner "partner.lua"]'
 pattern = '''link_config = {j_burnt = 1},'''
 position = "at"
 payload = '''
-link_config = {j_burnt = 1, j_fuseforce_solar_flare_joker = 1},
+link_config = {j_burnt = 1, j_fuseforce_solar_flare_joker = 1, j_fuseforce_molotov_cocktail = 1},
 '''
 match_indent = true

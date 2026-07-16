@@ -19,6 +19,33 @@ SMODS.Atlas{
 --    end
 --end
 
+if fixed_and_working then
+Partner_API.inject("pnr_partner_jimbo", "link_config", {j_fuse_three_jimbos = 1, j_fuseforce_fused = 1}, merge)
+Partner_API.inject("pnr_partner_mute", "link_config", {j_fuseforce_oscar_best_actor = 1}, merge)
+Partner_API.inject("pnr_partner_unite", "link_config", {j_fuseforce_reach_the_stars = 1}, merge)
+Partner_API.inject("pnr_partner_hatch", "link_config", {j_fuse_golden_egg = 1, j_fuseforce_easter_egg = 1, j_fuseforce_legendary_poxy = 1}, merge)
+Partner_API.inject("pnr_partner_steal", "link_config", {j_fuseforce_dye_pack = 1}, merge)
+Partner_API.inject("pnr_partner_pale", "link_config", {j_fuseforce_prosopagnosia = 1, j_fuseforce_assassin = 1}, merge)
+Partner_API.inject("pnr_partner_penalty", "link_config", {j_fuseforce_bribery_clown = 1, j_fuseforce_rgb = 1}, merge)
+Partner_API.inject("pnr_partner_fantasy", "link_config", {j_fuseforce_bribery_clown = 1}, merge)
+Partner_API.inject("pnr_partner_oracle", "link_config", {j_fuseforce_paranormal = 1}, merge)
+Partner_API.inject("pnr_partner_finesse", "link_config", {j_fuse_flip_flop = 1, j_fuseforce_colour_guard = 1}, merge)
+Partner_API.inject("pnr_partner_gilded", "link_config", {j_fuse_golden_egg = 1, j_fuseforce_golden_calf = 1, j_fuseforce_gold_golden_calf = 1, j_fuseforce_legendary_poxy = 1}, merge)
+Partner_API.inject("pnr_partner_batter", "link_config", {j_fuseforce_card_collection = 1}, merge)
+Partner_API.inject("pnr_partner_bargain", "link_config", {j_fuseforce_dye_pack = 1}, merge)
+Partner_API.inject("pnr_partner_memory", "link_config", {j_fuse_collectible_chaos_card = 1}, merge)
+Partner_API.inject("pnr_partner_stoke", "link_config", {j_fuseforce_golden_calf = 1, j_fuseforce_gold_golden_calf = 1}, merge)
+Partner_API.inject("pnr_partner_verify", "link_config", {j_fuseforce_masters_degree = 1}, merge)
+Partner_API.inject("pnr_partner_jump", "link_config", {j_fuseforce_power_pop = 1, j_fuseforce_skipper = 1, j_fuseforce_gold_skipper = 1, j_fuseforce_legendary_poxy = 1}, merge)
+Partner_API.inject("pnr_partner_vote", "link_config", {j_fuseforce_cut_and_pasted = 1}, merge)
+Partner_API.inject("pnr_partner_bleed", "link_config", {j_fuse_heart_paladin = 1}, merge)
+Partner_API.inject("pnr_partner_andrew", "link_config", {j_fuseforce_optimist = 1}, merge)
+Partner_API.inject("pnr_partner_thrill", "link_config", {j_fuseforce_comeback = 1}, merge)
+Partner_API.inject("pnr_partner_napkin", "link_config", {j_fuseforce_two_heads = 1, j_fuseforce_gold_two_heads = 1}, merge)
+Partner_API.inject("pnr_partner_valid", "link_config", {j_fuse_commercial_driver = 1, j_fuseforce_ratio_road = 1}, merge)
+Partner_API.inject("pnr_partner_blaze", "link_config", {j_fuseforce_solar_flare_joker = 1, j_fuseforce_molotov_cocktail = 1}, merge)
+end
+
 Partner_API.Partner{
     key = "offer",
     name = "Offer Partner",
@@ -76,6 +103,91 @@ Partner_API.Partner{
     check_for_unlock = function(self, args)
         for _, v in pairs(G.P_CENTER_POOLS["Joker"]) do
             if v.key == "j_fuseforce_rewards_card" then
+                if get_joker_win_sticker(v, true) >= 8 then
+                    return true
+                end
+                break
+            end
+        end
+    end,
+}
+
+Partner_API.Partner{
+    key = "divine",
+    name = "Divine",
+    unlocked = false,
+    discovered = true,
+    atlas = "fuseforce_partners",
+    pos = {x = 2, y = 0},
+    config = {
+        extra = {
+            dollars = 1,
+            active = 0
+        }
+    },
+    link_config = {j_fuseforce_soothsayer = 1},
+    loc_vars = function(self, info_queue, card)
+    local link_level = self:get_link_level()
+    local key = self.key
+    if link_level == 1 then key = key.."_"..link_level end
+        return {
+            key = key,
+            vars = {
+            card.ability.extra.dollars,
+            }
+        }
+    end,
+    calculate = function(self, card, context)
+        if context.open_booster then
+            local link_level = self:get_link_level()
+            --local _card = context.booster
+            if not link_level and (context.booster.kind == 'Celestial' or context.booster.kind == 'Arcana') then
+                return {
+                    dollars = card.ability.extra.dollars
+                }
+            end
+        end
+        if context.buying_card and not context.buying_self then
+            local link_level = self:get_link_level()
+            --local _card = context.card
+            if not link_level and (context.card.ability.set == 'Planet' or context.card.ability.set == 'Tarot') then
+                card.ability.extra.active = 1
+            end
+        end
+        if context.money_altered and context.amount < 0 and card.ability.extra.active == 1 then
+                card.ability.extra.active = 0
+                return {
+                    dollars = card.ability.extra.dollars
+                }
+        end
+        if context.starting_shop then
+            local link_level = self:get_link_level()
+            if link_level == 1 then
+                G.E_MANAGER:add_event(Event({func = function()
+                    local arcana_key = "p_arcana_normal_"..(math.random(1, 4))
+                    local planet_key = "p_celestial_normal_"..(math.random(1, 4))
+                    local booster1 = Card(G.shop_booster.T.x+G.shop_booster.T.w/2, G.shop_booster.T.y, G.CARD_W*1.27, G.CARD_H*1.27, G.P_CARDS.empty, G.P_CENTERS[arcana_key],
+                    {bypass_discovery_center = true, bypass_discovery_ui = true})
+                    local booster2 = Card(G.shop_booster.T.x+G.shop_booster.T.w/2, G.shop_booster.T.y, G.CARD_W*1.27, G.CARD_H*1.27, G.P_CARDS.empty, G.P_CENTERS[planet_key],
+                    {bypass_discovery_center = true, bypass_discovery_ui = true})
+                    create_shop_card_ui(booster1, "Booster", G.shop_booster)
+                    booster1:start_materialize()
+                    G.shop_booster:emplace(booster1)
+                    booster1.ability.couponed = true
+                    booster1:set_cost()
+                    create_shop_card_ui(booster2, "Booster", G.shop_booster)
+                    booster2:start_materialize()
+                    G.shop_booster:emplace(booster2)
+                    booster2.ability.couponed = true
+                    booster2:set_cost()
+                return true end}))
+                card_eval_status_text(card, "extra", nil, nil, nil, {message = localize("k_booster"), colour = G.C.PURPLE})
+            end
+        end
+    end,
+    check_for_unlock = function(self, args)
+        for _, v in pairs(G.P_CENTER_POOLS["Joker"]) do
+            if v.key == "j_fuseforce_soothsayer" then
                 if get_joker_win_sticker(v, true) >= 8 then
                     return true
                 end
@@ -158,6 +270,80 @@ Partner_API.Partner{
     check_for_unlock = function(self, args)
         for _, v in pairs(G.P_CENTER_POOLS["Joker"]) do
             if v.key == "j_fuseforce_sweet_theatre_combo" then
+                if get_joker_win_sticker(v, true) >= 8 then
+                    return true
+                end
+                break
+            end
+        end
+    end
+}
+
+Partner_API.Partner{
+    key = "build",
+    name = "Build Partner",
+    unlocked = false,
+    discovered = true,
+    atlas = "fuseforce_partners",
+    pos = {x = 4, y = 0},
+    link_config = {j_fuseforce_moorstone = 1},
+    loc_vars = function(self, info_queue, card)
+    local link_level = self:get_link_level()
+    local key = self.key
+    if link_level == 1 then key = key.."_"..link_level end
+        return {
+            key = key
+        }
+    end,
+    calculate = function(self, card, context)
+        if context.setting_blind then
+            local link_level = self:get_link_level()
+            if not link_level and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+                G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+                return {
+                    message = localize('k_plus_tarot'),
+                    message_card = card,
+                    func = function() -- This is for timing purposes, everything here runs after the message
+                        G.E_MANAGER:add_event(Event({
+                            func = (function()
+                                SMODS.add_card {
+                                    area = G.consumeables,
+                                    set = 'Tarot',
+                                    key = 'c_tower',
+                                    key_append = 'build' -- Optional, useful for manipulating the random seed and checking the source of the creation in `in_pool`.
+                                }
+                                G.GAME.consumeable_buffer = 0
+                                return true
+                            end)
+                        }))
+                    end
+                }
+            end
+            if link_level == 1 then
+                local valid_cards = {}
+                local stone_card = nil
+                local stone_card2 = nil
+                for _, playing_card in ipairs(G.playing_cards) do
+                    if not next(SMODS.get_enhancements(playing_card)) then
+                        valid_cards[#valid_cards + 1] = playing_card
+                    end
+                end
+                if valid_cards and link_level == 1 then
+                    stone_card = pseudorandom_element(valid_cards, 'marble')
+                    stone_card2 = pseudorandom_element(valid_cards, 'stone')
+                end
+                if stone_card then
+                    stone_card:set_ability('m_stone')
+                end
+                if stone_card2 then
+                    stone_card2:set_ability('m_stone')
+                end
+            end
+        end      
+    end,
+    check_for_unlock = function(self, args)
+        for _, v in pairs(G.P_CENTER_POOLS["Joker"]) do
+            if v.key == "j_fuseforce_moorstone" then
                 if get_joker_win_sticker(v, true) >= 8 then
                     return true
                 end
@@ -329,6 +515,67 @@ Partner_API.Partner{
 }
 
 Partner_API.Partner{
+    key = "hydra",
+    name = "Hydra Partner",
+    unlocked = false,
+    discovered = true,
+    atlas = "fuseforce_partners",
+    pos = {x = 1, y = 2},
+    config = {
+        extra = {
+            jokers = 10,
+            count = 0
+        }
+    },
+    link_config = {j_fuseforce_two_heads = 1, j_fuseforce_gold_two_heads = 2},
+    loc_vars = function(self, info_queue, card)
+    local link_level = self:get_link_level()
+    local key = self.key
+    if link_level == 1 or link_level == 2 then key = key.."_"..link_level end
+        return {
+            key = key,
+            vars = {
+            card.ability.extra.jokers - ((link_level or 0) * 2),
+            card.ability.extra.count,
+            }
+        }
+    end,
+    calculate = function(self, card, context)
+        if context.selling_card and context.card.ability.set == 'Joker' then
+        local link_level = self:get_link_level()
+            if context.card.config.center.key == 'j_fuseforce_gold_two_heads' then
+                modify_joker_slot_count(3)
+            elseif context.card.config.center.key == 'j_fuseforce_two_heads' then
+                modify_joker_slot_count(2)
+            elseif context.card.config.center.key == 'j_blueprint' or context.card.config.center.key == 'j_brainstorm' then
+                modify_joker_slot_count(1)
+            else
+                card.ability.extra.count = card.ability.extra.count + 1
+                if card.ability.extra.count >= card.ability.extra.jokers - ((link_level or 0) * 2) then
+                    card.ability.extra.count = card.ability.extra.count - (card.ability.extra.jokers - ((link_level or 0) * 2))
+                    G.E_MANAGER:add_event(Event({
+                        func = (function() 
+                            add_tag(Tag("tag_buffoon"))
+                            return true
+                        end)
+                    }))
+                end
+            end
+        end
+    end,
+    check_for_unlock = function(self, args)
+        for _, v in pairs(G.P_CENTER_POOLS["Joker"]) do
+            if v.key == "j_fuseforce_two_heads" or v.key == "j_fuseforce_gold_two_heads" then
+                if get_joker_win_sticker(v, true) >= 8 then
+                    return true
+                end
+                break
+            end
+        end
+    end
+}
+
+Partner_API.Partner{
     key = "suitable",
     name = "Suitable Partner",
     unlocked = false,
@@ -346,88 +593,76 @@ Partner_API.Partner{
     --if link_level == 1 then card.ability.extra.cost = 1 else card.ability.extra.cost = 3 end
         return {
             vars = {
-            card.ability.extra.cost
+            card.ability.extra.cost - (link_level or 0 * 2)
             }
         }
     end,
     calculate = function(self, card, context)
-        --if (context.card_added and context.card.ability.set == 'Joker') or (context.joker_type_destroyed and context.card.ability.set == 'Joker') or (context.selling_card and context.card.ability.set == 'Joker') then
-        if (context.card_added and context.card.ability.set == 'Joker') then
-            local link_level = self:get_link_level()
-            if link_level == 1 then
-                card.ability.extra.cost = 1
-            else
-                card.ability.extra.cost = 3
-            end
-        end
-        if context.partner_click and #G.consumeables.highlighted == 1 and (to_big(G.GAME.dollars) - to_big(G.GAME.bankrupt_at)) >= to_big(card.ability.extra.cost) then
+        if context.partner_click and #G.consumeables.highlighted == 1 then
             local suitor = G.consumeables.highlighted[1]
             local link_level = self:get_link_level()
-            if link_level == 1 then
-                card.ability.extra.cost = 1
-            else
-                card.ability.extra.cost = 3
-            end
-            if suitor.config.center_key == 'c_star' then
-                ease_dollars(-card.ability.extra.cost)
-                G.E_MANAGER:add_event(Event({
-                    trigger = 'after',
-                    delay = 0.4,
-                    func = function() 
-                        local edition = suitor.edition and suitor.edition.key or nil
-                        suitor:start_dissolve()
-                        local new_suitor = SMODS.create_card({area = G.consumeables, set = 'Tarot', key = 'c_sun', edition = edition})
-                        new_suitor:add_to_deck()
-                        G.consumeables:emplace(new_suitor)
-                        --new_suitor:start_materialize()
-                        return true
-                    end
-                }))
-            elseif suitor.config.center_key == 'c_sun' then
-                ease_dollars(-card.ability.extra.cost)
-                G.E_MANAGER:add_event(Event({
-                    trigger = 'after',
-                    delay = 0.4,
-                    func = function() 
-                        local edition = suitor.edition and suitor.edition.key or nil
-                        suitor:start_dissolve()
-                        local new_suitor = SMODS.create_card({area = G.consumeables, set = 'Tarot', key = 'c_world', edition = edition})
-                        new_suitor:add_to_deck()
-                        G.consumeables:emplace(new_suitor)
-                        --new_suitor:start_materialize()
-                        return true
-                    end
-                }))
-            elseif suitor.config.center_key == 'c_world' then
-                ease_dollars(-card.ability.extra.cost)
-                G.E_MANAGER:add_event(Event({
-                    trigger = 'after',
-                    delay = 0.4,
-                    func = function() 
-                        local edition = suitor.edition and suitor.edition.key or nil
-                        suitor:start_dissolve()
-                        local new_suitor = SMODS.create_card({area = G.consumeables, set = 'Tarot', key = 'c_moon', edition = edition})
-                        new_suitor:add_to_deck()
-                        G.consumeables:emplace(new_suitor)
-                        --new_suitor:start_materialize()
-                        return true
-                    end
-                }))
-            elseif suitor.config.center_key == 'c_moon' then
-                ease_dollars(-card.ability.extra.cost)
-                G.E_MANAGER:add_event(Event({
-                    trigger = 'after',
-                    delay = 0.4,
-                    func = function() 
-                        local edition = suitor.edition and suitor.edition.key or nil
-                        suitor:start_dissolve()
-                        local new_suitor = SMODS.create_card({area = G.consumeables, set = 'Tarot', key = 'c_star', edition = edition})
-                        new_suitor:add_to_deck()
-                        G.consumeables:emplace(new_suitor)
-                        --new_suitor:start_materialize()
-                        return true
-                    end
-                }))
+            if (to_big(G.GAME.dollars) - to_big(G.GAME.bankrupt_at)) >= to_big(card.ability.extra.cost - (link_level * 2) or 0) then
+                if suitor.config.center_key == 'c_star' then
+                    ease_dollars(-card.ability.extra.cost - (link_level * 2) or 0)
+                    G.E_MANAGER:add_event(Event({
+                        trigger = 'after',
+                        delay = 0.4,
+                        func = function() 
+                            local edition = suitor.edition and suitor.edition.key or nil
+                            suitor:start_dissolve()
+                            local new_suitor = SMODS.create_card({area = G.consumeables, set = 'Tarot', key = 'c_sun', edition = edition})
+                            new_suitor:add_to_deck()
+                            G.consumeables:emplace(new_suitor)
+                            --new_suitor:start_materialize()
+                            return true
+                        end
+                    }))
+                elseif suitor.config.center_key == 'c_sun' then
+                    ease_dollars(-card.ability.extra.cost - (link_level * 2) or 0)
+                    G.E_MANAGER:add_event(Event({
+                        trigger = 'after',
+                        delay = 0.4,
+                        func = function() 
+                            local edition = suitor.edition and suitor.edition.key or nil
+                            suitor:start_dissolve()
+                            local new_suitor = SMODS.create_card({area = G.consumeables, set = 'Tarot', key = 'c_world', edition = edition})
+                            new_suitor:add_to_deck()
+                            G.consumeables:emplace(new_suitor)
+                            --new_suitor:start_materialize()
+                            return true
+                        end
+                    }))
+                elseif suitor.config.center_key == 'c_world' then
+                    ease_dollars(-card.ability.extra.cost - (link_level * 2) or 0)
+                    G.E_MANAGER:add_event(Event({
+                        trigger = 'after',
+                        delay = 0.4,
+                        func = function() 
+                            local edition = suitor.edition and suitor.edition.key or nil
+                            suitor:start_dissolve()
+                            local new_suitor = SMODS.create_card({area = G.consumeables, set = 'Tarot', key = 'c_moon', edition = edition})
+                            new_suitor:add_to_deck()
+                            G.consumeables:emplace(new_suitor)
+                            --new_suitor:start_materialize()
+                            return true
+                        end
+                    }))
+                elseif suitor.config.center_key == 'c_moon' then
+                    ease_dollars(-card.ability.extra.cost - (link_level * 2) or 0)
+                    G.E_MANAGER:add_event(Event({
+                        trigger = 'after',
+                        delay = 0.4,
+                        func = function() 
+                            local edition = suitor.edition and suitor.edition.key or nil
+                            suitor:start_dissolve()
+                            local new_suitor = SMODS.create_card({area = G.consumeables, set = 'Tarot', key = 'c_star', edition = edition})
+                            new_suitor:add_to_deck()
+                            G.consumeables:emplace(new_suitor)
+                            --new_suitor:start_materialize()
+                            return true
+                        end
+                    }))
+                end
             end
         end
     end,
@@ -498,12 +733,12 @@ Partner_API.Partner{
                     end
                 }
             end
-            if link_level >= 1 then
+            if link_level == 1 or link_level == 2 then
                 local valid_cards = {}
-                local gold_card = {}
-                local steel_card = {}
-                local gold_card2 = {}
-                local steel_card2 = {}
+                local gold_card = nil
+                local steel_card = nil
+                local gold_card2 = nil
+                local steel_card2 = nil
                 for _, playing_card in ipairs(G.playing_cards) do
                     if not next(SMODS.get_enhancements(playing_card)) then
                         valid_cards[#valid_cards + 1] = playing_card
@@ -578,6 +813,26 @@ Partner_API.Partner{
             (link_level or (to_big(G.GAME.dollars) - to_big(G.GAME.bankrupt_at)) >= to_big(card.ability.extra.cost)) then
                 if not link_level then
                     ease_dollars(-card.ability.extra.cost)
+                end
+                local joker = nil
+                for i = 1, #G.jokers.cards do
+                    if G.jokers.cards[i].config.center.key == 'j_fuseforce_midas_joker' then
+                        joker = G.jokers.cards[i]
+                        break
+                    end
+                end
+                if joker then
+                    if SMODS.has_enhancement(playingcard, 'm_bonus') or SMODS.has_enhancement(playingcard, 'm_stone') or SMODS.has_enhancement(playingcard, 'm_steel') then
+                        joker.ability.extra.chips = joker.ability.extra.chips + joker.ability.extra.chips_mod
+                    elseif SMODS.has_enhancement(playingcard, 'm_mult') or SMODS.has_enhancement(playingcard, 'm_wild') or SMODS.has_enhancement(playingcard, 'm_glass') then
+                        joker.ability.extra.mult = joker.ability.extra.mult + joker.ability.extra.mult_mod                        
+                    else
+                        joker.ability.extra.turned = joker.ability.extra.turned + 1
+                        if joker.ability.extra.turned == joker.ability.extra.count then
+                            joker.ability.extra.turned = 0
+                            joker.ability.extra.dollars = joker.ability.extra.dollars + joker.ability.extra.dollars_mod
+                        end
+                    end
                 end
                 G.E_MANAGER:add_event(Event({
                     trigger = 'after',
@@ -811,25 +1066,32 @@ Partner_API.Partner{
         }
     end,
     calculate = function(self, card, context)
-        if context.setting_blind then
-            if SMODS.pseudorandom_probability(card, 'six', 1, card.ability.extra.six, 'nice', false) then
-                if SMODS.pseudorandom_probability(card, 'nine', 1, card.ability.extra.nine, 'nice', false) then
-                    G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 2
+        if context.ending_shop then
+            local nice_consumeable = "Tarot"
+            local nice_message = 'k_plus_tarot'
+            if SMODS.pseudorandom_probability(card, 'consumeable', 1, 2, 'nice', true) then
+                nice_consumeable = "Spectral"
+                nice_message = 'k_plus_spectral'
+            end
+            if SMODS.pseudorandom_probability(card, 'nine', 1, card.ability.extra.nine, 'nice', false) then
+                local nice_tag = "tag_charm"
+                if SMODS.pseudorandom_probability(card, 'tag', 1, 2, 'nice', true) then
+                    nice_tag = "tag_ethereal"
+                end
+                if SMODS.pseudorandom_probability(card, 'six', 1, card.ability.extra.six, 'nice', false) and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+                    G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
                     return {
                         extra = {
-                            message = localize('k_plus_tarot_spectral'),
+                            message = localize(nice_message),
                             message_card = card,
                             func = function() -- This is for timing purposes, everything here runs after the message
                                 G.E_MANAGER:add_event(Event({
                                     func = (function()
                                         SMODS.add_card {
-                                            set = 'Tarot',
+                                            set = nice_consumeable,
                                             key_append = 'nice' -- Optional, useful for manipulating the random seed and checking the source of the creation in `in_pool`.
                                         }
-                                        SMODS.add_card {
-                                            set = 'Spectral',
-                                            key_append = 'nice' -- Optional, useful for manipulating the random seed and checking the source of the creation in `in_pool`.
-                                        }
+                                        add_tag(Tag(nice_tag))
                                         G.GAME.consumeable_buffer = 0
                                         return true
                                     end)
@@ -838,38 +1100,24 @@ Partner_API.Partner{
                         },
                     }
                 else
-                    G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-                    return {
-                        extra = {
-                            message = localize('k_plus_tarot'),
-                            message_card = card,
-                            func = function() -- This is for timing purposes, everything here runs after the message
-                                G.E_MANAGER:add_event(Event({
-                                    func = (function()
-                                        SMODS.add_card {
-                                            set = 'Tarot',
-                                            key_append = 'nice' -- Optional, useful for manipulating the random seed and checking the source of the creation in `in_pool`.
-                                        }
-                                        G.GAME.consumeable_buffer = 0
-                                        return true
-                                    end)
-                                }))
-                            end
-                        },
-                    }
+                    G.E_MANAGER:add_event(Event({
+                        func = (function() 
+                            add_tag(Tag(nice_tag))
+                            return true
+                        end)
+                    }))
                 end
-            end
-            if SMODS.pseudorandom_probability(card, 'nine', 1, card.ability.extra.nine, 'nice', false) then
+            elseif SMODS.pseudorandom_probability(card, 'six', 1, card.ability.extra.six, 'nice', false) and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
                 G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
                 return {
                     extra = {
-                        message = localize('k_plus_spectral'),
+                        message = localize(nice_message),
                         message_card = card,
                         func = function() -- This is for timing purposes, everything here runs after the message
                             G.E_MANAGER:add_event(Event({
                                 func = (function()
                                     SMODS.add_card {
-                                        set = 'Spectral',
+                                        set = nice_consumeable,
                                         key_append = 'nice' -- Optional, useful for manipulating the random seed and checking the source of the creation in `in_pool`.
                                     }
                                     G.GAME.consumeable_buffer = 0
@@ -1497,3 +1745,80 @@ Partner_API.Partner{
         end
     end
 }
+
+if special_day then
+Partner_API.Partner{
+    key = "birthday",
+    name = "Birthday Partner",
+    unlocked = false,
+    discovered = true,
+    atlas = "fuseforce_partners",
+    pos = {x = 4, y = 6},
+    config = {
+        extra = {
+            cost = 10
+        }
+    },
+    link_config = {j_fuseforce_legendary_poxy = 1},
+    loc_vars = function(self, info_queue, card)
+    local link_level = self:get_link_level()
+    local key = self.key
+    if link_level == 1 then key = key.."_"..link_level end
+        return {
+            key = key,
+            vars = {
+            card.ability.extra.cost
+            }
+        }
+    end,
+    calculate = function(self, card, context)
+        if context.partner_click and (to_big(G.GAME.dollars) - to_big(G.GAME.bankrupt_at)) >= to_big(card.ability.extra.cost) then
+        local link_level = self:get_link_level()
+        ease_dollars(-card.ability.extra.cost)
+            if link_level then
+                modify_joker_slot_count(1)
+            end       
+            if not link_level then
+                local joker1 = "j_swashbuckler"
+                local joker2 = "j_throwback"
+                local joker3 = "j_egg"
+                local joker4 = "j_golden"
+                local joker5 = "j_fuseforce_skipper"
+                local joker6 = "j_fuse_golden_egg"
+                local set_joker = "j_egg"
+                if next(SMODS.find_card('j_egg')) or next(SMODS.find_card('j_fuse_golden_egg')) and not next(SMODS.find_card('j_fuseforce_skipper')) then
+                    if next(SMODS.find_card('j_golden')) or next(SMODS.find_card('j_fuse_golden_egg')) then
+                        if next(SMODS.find_card('j_swashbuckler')) then
+                            set_joker = "j_throwback"
+                        else
+                            set_joker = "j_swashbuckler"
+                        end
+                    else
+                        set_joker = "j_golden"
+                    end
+                end                    
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.1,
+                    func = function()
+                    play_sound('whoosh1')
+                        local shop_joker = SMODS.add_card({
+                            set = 'Joker',
+                            area = G.shop_jokers,
+                            key = set_joker
+                        })
+                        create_shop_card_ui(shop_joker, 'Joker', G.shop_jokers)
+                        shop_joker.for_sale = true
+                        shop_joker.ability.couponed = true
+                        shop_joker:set_cost()
+                        return true
+                    end
+                }))
+            end
+        end
+    end,
+    check_for_unlock = function(self, args)
+        return true
+    end
+}
+end
