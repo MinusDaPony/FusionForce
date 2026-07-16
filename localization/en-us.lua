@@ -3,6 +3,7 @@ return {
 		["dictionary"] = {
 			["k_drunk_ex"] = "Drunk!",
 			["k_fuseforce_gold_fusion"] = "Gold Fusion",
+			["k_fuseforce_leg_fusion"] = "Legendary Fusion",
 			["k_both_compat"] = "left & right",
 			["k_left_compat"] = "left twice",
 			["k_right_compat"] = "right twice",
@@ -15,6 +16,10 @@ return {
 		["v_dictionary"] = {
 			["chancer_active"] = "tripled!",
 			["chancer_inactive"] = "doubled",
+			["fuseforce_plus"] = "+",
+			["fuseforce_minus"] = "-",
+			["fuseforce_active"] = "Level up next hand!",
+			["fuseforce_inactive"] = "Discard not used",
 			},
 		},
 	["descriptions"] = {
@@ -85,6 +90,32 @@ return {
 					"{C:attention}Gold Stake{} difficulty",
 				},
 			},
+			["pnr_fuseforce_divine"] = {
+				["name"] = "Divine",
+				["text"] = {
+					"Refunds {C:money}$#1#{} when a",
+					"{C:planet}Planet{} or {C:tarot}Tarot{} card",
+					"or booster is purchased",
+				},
+				["unlock"] = {
+					"Win a run with",
+					"{C:attention}Soothsayer{} on",
+					"{C:attention}Gold Stake{} difficulty",
+				},
+			},
+			["pnr_fuseforce_divine_1"] = {
+				["name"] = "Divine",
+				["text"] = {
+					"Shop stocks an additional",
+					"{C:planet}Celestial Pack{} and",
+					"an {C:tarot}Arcana Pack",
+				},
+				["unlock"] = {
+					"Win a run with",
+					"{C:attention}Soothsayer{} on",
+					"{C:attention}Gold Stake{} difficulty",
+				},
+			},
 			["pnr_fuseforce_shh"] = {
 				["name"] = "Shh!",
 				["text"] = {
@@ -109,6 +140,32 @@ return {
 				["unlock"] = {
 					"Win a run with",
 					"{C:attention}Sweet Theatre Combo{} on",
+					"{C:attention}Gold Stake{} difficulty",
+				},
+			},
+			["pnr_fuseforce_build"] = {
+				["name"] = "Build",
+				["text"] = {
+					"Create a {C:tarot}Tower{} card",
+					"when blind selected",
+					"{C:inactive}(Must have room)",
+				},
+				["unlock"] = {
+					"Win a run with",
+					"{C:attention}Geode Joker{} on",
+					"{C:attention}Gold Stake{} difficulty",
+				},
+			},
+			["pnr_fuseforce_build_1"] = {
+				["name"] = "Build",
+				["text"] = {
+					"{C:attention}2{} random basic {C:attention}playing cards",
+					"in your deck become {C:blue}Stone",
+					"when the blind is selected",
+				},
+				["unlock"] = {
+					"Win a run with",
+					"{C:attention}Geode Joker{} on",
 					"{C:attention}Gold Stake{} difficulty",
 				},
 			},
@@ -162,6 +219,57 @@ return {
 				["unlock"] = {
 					"Win a run with",
 					"{C:attention}Shadowman{} on",
+					"{C:attention}Gold Stake{} difficulty",
+				},
+			},
+			["pnr_fuseforce_hydra"] = {
+				["name"] = "Hydra",
+				["text"] = {
+					"Create a {C:attention}Buffoon Tag{}",
+					"after {C:attention}#1#{C:inactive} [#2#]{} Jokers sold",
+					"Gain {C:dark_edition}+1{} Joker Slot",
+					"when you sell {C:attention}Brainstorm",
+					"or {C:blue}Blueprint{} instead",
+				},
+				["unlock"] = {
+					"Win a run with",
+					"{C:attention}Two Heads{} on",
+					"{C:attention}Gold Stake{} difficulty",
+				},
+			},
+			["pnr_fuseforce_hydra_1"] = {
+				["name"] = "Hydra",
+				["text"] = {
+					"Create a {C:attention}Buffoon Tag{}",
+					"after {C:attention}#1#{C:inactive} [#2#]{} Jokers sold",
+					"Gain {C:dark_edition}+1{} Joker Slot",
+					"when you sell {C:attention}Brainstorm",
+					"or {C:blue}Blueprint{} instead",
+					"Gain {C:dark_edition}+2{} Joker Slots",
+					"when you sell {C:attention}Two {C:blue}Heads",
+				},
+				["unlock"] = {
+					"Win a run with",
+					"{C:attention}Two Heads{} on",
+					"{C:attention}Gold Stake{} difficulty",
+				},
+			},
+			["pnr_fuseforce_hydra_2"] = {
+				["name"] = "Hydra",
+				["text"] = {
+					"Create a {C:attention}Buffoon Tag{}",
+					"after {C:attention}#1#{C:inactive} [#2#]{} Jokers sold",
+					"Gain {C:dark_edition}+1{} Joker Slot",
+					"when you sell {C:attention}Brainstorm",
+					"or {C:blue}Blueprint{} instead",
+					"Gain {C:dark_edition}+2{} Joker Slots",
+					"when you sell {C:attention}Two {C:blue}Heads",
+					"Gain {C:dark_edition}+3{} Joker Slots",
+					"when you sell {C:money}Gold Two Heads",
+				},
+				["unlock"] = {
+					"Win a run with",
+					"{C:attention}Two Heads{} on",
 					"{C:attention}Gold Stake{} difficulty",
 				},
 			},
@@ -295,9 +403,11 @@ return {
 				["name"] = "Nice",
 				["text"] = {
 					"{C:green}#3# in #1#{} chance to create",
-					"a {C:tarot}Tarot{} card and also",
+					"a {C:tarot}Tarot{} or {C:spectral}Spectral{} card",
+					"{C:inactive}(Must have room)",
 					"{C:green}#3# in #2#{} chance to create a",
-					"{C:spectral}Spectral{} card when blind selected",
+					"{C:tarot}Charm{} or {C:spectral}Ethereal{} tag",
+					"at the end of the {C:attention}shop",
 				},
 				["unlock"] = {
 					"Win a run with",
@@ -310,9 +420,11 @@ return {
 				["text"] = {
 					"{C:attention}#1#{} and {C:attention}#2#{} card always score",
 					"{C:green}#3# in #1#{} chance to create",
-					"a {C:tarot}Tarot{} card and also",
+					"a {C:tarot}Tarot{} or {C:spectral}Spectral{} card",
+					"{C:inactive}(Must have room)",
 					"{C:green}#3# in #2#{} chance to create a",
-					"{C:spectral}Spectral{} card when blind selected",
+					"{C:tarot}Charm{} or {C:spectral}Ethereal{} tag",
+					"at the end of the {C:attention}shop",
 				},
 				["unlock"] = {
 					"Win a run with",
@@ -325,9 +437,11 @@ return {
 				["text"] = {
 					"{C:attention}#1#{}s & {C:attention}#2#{}s give {C:red}#3#{} Mult from chance",
 					"{C:green}#3# in #1#{} chance to create",
-					"a {C:tarot}Tarot{} card and also",
+					"a {C:tarot}Tarot{} or {C:spectral}Spectral{} card",
+					"{C:inactive}(Must have room)",
 					"{C:green}#3# in #2#{} chance to create a",
-					"{C:spectral}Spectral{} card when blind selected",
+					"{C:tarot}Charm{} or {C:spectral}Ethereal{} tag",
+					"at the end of the {C:attention}shop",
 				},
 				["unlock"] = {
 					"Win a run with",
@@ -539,6 +653,29 @@ return {
 					"{C:attention}Gold Stake{} difficulty",
 				},
 			},
+			["pnr_fuseforce_birthday"] = {
+				["name"] = "Birthday",
+				["text"] = {
+					"Click to pay {C:money}$#1#{} to",
+					"add a free {C:attention}Joker",
+					"to the shop",
+				},
+				["unlock"] = {
+					"Reach ante {C:attention}28",
+					"in real life",
+				},
+			},
+			["pnr_fuseforce_birthday_1"] = {
+				["name"] = "Birthday",
+				["text"] = {
+					"Click to pay {C:money}$#1#{} to",
+					"Gain {C:dark_edition}+1{} Joker Slot",
+				},
+				["unlock"] = {
+					"Reach ante {C:attention}28",
+					"in real life",
+				},
+			},
 		},
 		["Ortalab Artist"] = {
 			['gappie'] = {
@@ -559,6 +696,11 @@ return {
 			['itayfeder'] = {
 				["text"] = {
 					"itayfeder",
+				}
+			},
+			['inkyst'] = {
+				["text"] = {
+					"Inkyst",
 				}
 			},
 		},
@@ -619,13 +761,13 @@ return {
 			["j_fuseforce_soothsayer"] = {
 				["name"] = "Soothsayer",
 				["text"] = {
-					"When {C:attention}Blind{} is selected,",
-					"create a random {C:planet}Planet{}",
-					"and {C:tarot}Tarot{} card",
-					"{s:0.2} ",
-					"{C:planet}Celestial Packs{}, {C:tarot}Arcana Packs",
-					"{C:planet}Planet{}, and {C:tarot}Tarot{} cards,",
-					"are all {C:attention}free",
+					"{C:tarot}Arcana Packs{}, {C:planet}Celestial Packs{},",
+					"{C:tarot}Tarot{}, and {C:planet}Planet{} cards,",
+					"are all {C:attention}Free{} in the shop",
+					"Create a random {C:tarot}Tarot{} card",
+					"when {C:attention}Blind{} is selected",
+					"Create a random {C:planet}Planet{} card",
+					"at the {C:attention}End{} of the {C:attention}Round",
 					"{C:inactive}(#1# + #2#)"
 				},
 			},
@@ -694,15 +836,15 @@ return {
 				},
 			},
 			["j_fuseforce_moorstone"] = {
-				["name"] = "Moorstone",
+				["name"] = "Geode Joker",
 				["text"] = {
 					"Gains {C:chips}+#1#{} Chips for each",
 					"{C:attention}Stone Card{} in full deck",
 					"After playing {C:attention}#3#{} more",
-					"{C:attention}Stone{} cards, add",
-					"a {C:attention}Stone{} card to deck",
+					"{C:attention}Stone{} cards, add a",
+					"{C:attention}Stone{} card to deck",
 					"{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips)",
-					"{C:inactive}(#5# + #6#)"
+					"{s:0.9,C:inactive}(#5# + #6#)"
 				},
 			},
 			["j_fuseforce_oscar_best_actor"] = {
@@ -839,7 +981,7 @@ return {
 				},
 			},
 			["j_fuseforce_two_heads"] = {
-				["name"] = "Two Heads",
+				["name"] = "Two Heads", --I see you Expert Umbrella Enthusiast!
 				["text"] = {
 					"{C:inactive}are better than one",
 					"Copies abilities of",
@@ -847,16 +989,6 @@ return {
 					"and to the right",
 					"Copies twice if only",
 					"one {C:green}compatible{} Joker",
-					"{s:0.9,C:inactive}(#3# + #2#)"
-				},
-			},
-			["j_fuseforce_giant_shoulders"] = {
-				["name"] = "Two Heads",
-				["text"] = {
-					"{C:inactive}are better than one",
-					"Retrigger all other",
-					"{X:money,C:white}Fusion{} Jokers",
-					"{C:attention}#1#{} times",
 					"{s:0.9,C:inactive}(#3# + #2#)"
 				},
 			},
@@ -1109,6 +1241,15 @@ return {
 					"{s:0.9,C:inactive}(#1# + #2#)"
 				},
 			},
+			["j_fuseforce_shadowman_dupe"] = {
+				["name"] = "Shadowman",
+				["text"] = {
+					"Sell this card to randomly",
+					"{C:attention}Duplicate{} a Joker and give",
+					"it the {C:dark_edition}Negative{} edition",
+					"{s:0.9,C:inactive}(#1# + #2#)"
+				},
+			},
 			["j_fuseforce_gargoyle"] = {
 				["name"] = "Gargoyle",
 				["text"] = {
@@ -1169,6 +1310,20 @@ return {
 					"{C:inactive}(#5# + #6#)"
 				},
 			},
+			["j_fuseforce_millstone"] = {
+				["name"] = "Millstone",
+				["text"] = {
+					"{C:mult}+#1#{} Mult for each card",
+					"below {C:attention}#3#{} in your full deck",
+					"{s:0.2} ",
+					"{X:mult,C:white}X#4#{} Mult if played poker hand",
+					"has already been played {C:attention}this round{},",
+					"{X:mult,C:white}X#5#{} if it has been played {C:attention}twice{},",
+					"or {X:mult,C:white}X#6#{} if your deck is {C:attention}empty",
+					"{C:inactive}(Currently {C:red}+#2#{C:inactive} Mult)",
+					"{C:inactive}(#7# + #8#)"
+				},
+			},
 			["j_fuseforce_assassin"] = {
 				["name"] = "Assassin",
 				["text"] = {
@@ -1183,13 +1338,196 @@ return {
 				["name"] = "Hybrid Fusion",
 				["text"] = {
 					"Only for the {C:attention}first hand{} of each round:",
-					"If the played hand is only {C:attention}#3#{} card, add #1#",
-					"permanent copy to deck and draw it to hand",
-					"{C:attention}#4#{} cards, adds a copy of the first card with",
-					"the {C:blue}enhancement/edition/seal{} of the second",
-					"{C:attention}#5#{} cards, gives {C:mult}+#2#{} Mult",
-					"{C:attention}4{} or more and all played cards are {C:red}destroyed",
+					"If played hand is {C:attention}#1#{} card, add a",
+					"permanent copy and draw it to hand",
+					"{C:attention}#2#{} cards, adds a copy of the second card",
+					"with the {C:attention}Rank{} and {C:attention}Suit{} of the first",
+					"More than {C:attention}#3#{}, adds a random",
+					"basic {C:red}face down{} card to hand",
+					"{C:inactive}(#4# + #5#)"
+				},
+			},
+			["j_fuseforce_fortified"] = {
+				["name"] = "Fortified Joker",
+				["text"] = {
+					"Gives {X:mult,C:white}X#1#{} Mult for each {C:attention}Steel",
+					"and {C:attention}Stone{} card in your {C:attention}full deck",
+					"{C:attention}Stone{} cards in your hand to the",
+					"left of {C:attention}Steel{} cards give {C:mult}+#3#{} Mult",
+					"{C:attention}Steel{} cards scored to the right",
+					"of {C:attention}Stone{} cards give {X:chips,C:white}X#4#{} Chips",
+					"{C:inactive}(Currently {X:mult,C:white}X#2#{C:inactive} Mult)",
+					"{C:inactive}(#5# + #6#)"
+				},
+			},
+			["j_fuseforce_easter_egg"] = {
+				["name"] = "Easter Egg",
+				["text"] = {
+					"Add {C:money}$#1#{} of {C:attention}sell value",
+					"to every {C:attention}Joker{} and",
+					"{C:attention}Consumable{} card and",
+					"{C:money}$#2#{} to itself at",
+					"end of round",
+					"{C:attention}Hermit{} and {C:attention}Temprance",
+					"have {C:money}50%{} higher max",
+					"{C:inactive}(#3# + #4#)"
+				},
+			},
+			["j_fuseforce_missing_poster"] = {
+				["name"] = "Missing Poster",
+				["text"] = {
+					"{C:green}#3# in #4#{} chance to try to",
+					"{C:red}destroy{} a random joker",
+					"to gain {X:mult,C:white}X#1#{} Mult when you",
+					"{C:attention}skip{} or select a {C:attention}blind",
+					"{s:0.2} ",
+					"Every other {C:attention}joker slot",
+					"filled increases the odds",
+					"{C:inactive}(Currently {X:mult,C:white}X#2#{C:inactive} Mult)",
+					"{C:inactive}(#5# + #6#)"
+				},
+			},
+			["j_fuseforce_extortion"] = {
+				["name"] = "Extortion",
+				["text"] = {
+					"Joker to the {C:attention}left{} gains {C:money}$#1#{} of sell value",
+					"for every {C:money}$5{} you have at end of round",
+					"The Joker to the {C:attention}right{} gives",
+					"double its {C:mult}sell value{} as Mult",
+					"{C:inactive}(#2# + #3#)"
+				},
+			},
+			["j_fuseforce_taurus"] = {
+				["name"] = "Taurus",
+				["text"] = {
+					"When {C:attention}Blind{} is selected gain",
+					"{C:blue}+1{} Hand for every {C:money}$#3#{} you have",
+					"Cost decreases by {C:money}$#4#{} when",
+					"{C:attention}Boss Blind{} is defeated",
+					"Earn {C:money}$#1#{} multiplied by",
+					"your {C:attention}ante{} at end of round",
+					"{C:inactive}(Currently {C:blue}+#5#{C:inactive} Hands and {C:money}$#2#{C:inactive})",
 					"{C:inactive}(#6# + #7#)"
+				},
+			},
+			["j_fuseforce_torus"] = {
+				["name"] = "Torus",
+				["text"] = {
+					"Gains {X:mult,C:white}X#3#{} Mult for every",
+					"{C:planet}Planet{} card used this run",
+					"Earn {C:money}$#1#{} at end of round per",
+					"unique {C:planet}Planet{} card used and",
+					"unique {C:attention}Hand{} played this run",
+					"{C:inactive}(Currently {X:mult,C:white}X#4#{C:inactive} Mult and {C:money}$#2#{C:inactive})",
+					"{C:inactive}(#5# + #6#)"
+				},
+			},
+			["j_fuseforce_full_of_stars"] = {
+				["name"] = "Full of Stars",
+				["text"] = {
+					"Gains {X:mult,C:white}X#2#{} Mult every time",
+					"a {C:planet}Planet{} card is used",
+					"Gives {C:mult}+#3#{} Mult per other {C:attention}poker hand",
+					"played more than current hand type",
+					"{C:inactive}(Currently {X:mult,C:white}X#1#{C:inactive} Mult)",
+					"{C:inactive}(#4# + #5#)"
+				},
+			},
+			["j_fuseforce_circus"] = {
+				["name"] = "Circus Tickets",
+				["text"] = {
+					"{C:attention}Joker{}, {C:tarot}Tarot{}, {C:planet}Planet{} and {C:spectral}Spectral",
+					"cards may appear multiple times",
+					"Shop {C:green}Rerolls{} affect {C:voucher}Vouchers",
+					"{C:inactive}(#2# + #3#)"
+				},
+			},
+			["j_fuseforce_circus_dupe"] = {
+				["name"] = "Circus Tickets",
+				["text"] = {
+					"{s:1.1,C:attention}#1#{s:1.1} free {s:1.1,C:green}Rerolls",
+					"{s:1.1}per shop",
+					"{C:inactive}(#2# + #3#)"
+				},
+			},
+			["j_fuseforce_comeback"] = {
+				["name"] = "Comeback",
+				["text"] = {
+					"{C:attention}-#1#{} hand size, {C:red}+#4#{} discards",
+					"Gives {C:chips}+#3#{} chips for each",
+					"{C:attention}discard{} used this round",
+					"{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips)",
+					"{C:inactive}(#5# + #6#)"
+				},
+			},
+			["j_fuseforce_colour_guard"] = {
+				["name"] = "Colour Guard",
+				["text"] = {
+					"Each discard {C:attention}used{} increases hand",
+					"size by {C:attention}#2#{} until end of round",
+					"Gives {C:chips}+#3#{} chips for each",
+					"{C:attention}remaining{} discard",
+					"{C:inactive}(Currently {C:attention}+#1#{C:inactive} Hand Size)",
+					"{C:inactive}(#5# + #6#)"
+				},
+			},
+			["j_fuseforce_aristocrats"] = {
+				["name"] = "The Aristocrats",
+				["text"] = {
+					"Gives {X:mult,C:white}X#2#{} Mult equal to",
+					"{C:attention}Face{} card held in hand",
+					"Each {C:attention}Face{} card held",
+					"in hand gives {C:mult}+#1#{} Mult",
+					"{C:attention}Queens{} can {C:attention}Jack{} a",
+					"{C:attention}Kings{s:0.5} censored{} held in hand",
+					"{C:inactive}(#3# + #4#)"
+				},
+			},
+			["j_fuseforce_cactus_juice"] = {
+				["name"] = "Cactus Juice",
+				["text"] = {
+					"Sell this card to disable",
+					"the current {C:attention}Boss Blind{},",
+					"create a free {C:attention}Double Tag{},",
+					"and {X:money,C:white}Defuse{} this joker",
+					"{C:inactive}(#1# + #2#)"
+				},
+			},
+			["j_fuseforce_golden_bantam"] = {
+				["name"] = "Golden Bantam",
+				["text"] = {
+					"{s:1.3,C:mult}+#1#{s:1.3} Mult",
+					"{C:green}#3#0 in Mult{C:inactive}(#1#){} chance of",
+					"{C:mult}-#2#{} Mult at end of round",
+					"{C:inactive}(#4# + #5#)"
+				},
+			},
+			["j_fuseforce_banana_bunch"] = {
+				["name"] = "Banana Bunch",
+				["text"] = {
+					"{C:green}#2# in #3#{} chance to give {X:mult,C:white}X#1#{} Mult",
+					"Chance increases per",
+					"{C:attention}hand{} played this round",
+					"{C:inactive}(#4# + #5#)"
+				},
+			},
+			["j_fuseforce_half_half"] = {
+				["name"] = "Half & Half Joker",
+				["text"] = {
+					"{s:1.1,C:mult}+#1#{s:1.1} Mult for each",
+					"{s:1.1}card not selected",
+					"{C:inactive}(#2# + #2#)"
+				},
+			},
+			["j_fuseforce_molotov_cocktail"] = {
+				["name"] = "Molotov Cocktail",
+				["text"] = {
+					"Level of played {C:attention}poker hand{} is",
+					"upgraded after using a {C:red}discard",
+					"Destroyed after {C:attention}#1#{} rounds then",
+					"gain a permanent {C:red}+#2#{} Discard",
+					"{C:inactive}#3#",
+					"{C:inactive}(#4# + #5#)"
 				},
 			},
 			["j_fuseforce_lighthouse"] = {
@@ -1290,6 +1628,19 @@ return {
 					"{s:0.8,C:inactive}(#8# + #9# + #10#)"
 				},
 			},
+			["j_fuseforce_midas_joker"] = {
+				["name"] = "Midas Joker",
+				["text"] = {
+					"All scored cards turn into {C:attention}Gold{} cards when a {C:attention}Gold{} card is scored",
+					"{s:0.2} ",
+					"Played {C:attention}Gold{} cards earn {C:money}$#1#{}, give {C:chips}+#3#{} Chips and {C:mult}+#5#{} Mult when scored",
+					"{s:0.2} ",
+					"Gains {C:chips}+#4#{} Chips when this turns a {C:attention}Bonus{}, {C:attention}Stone{} or {C:attention}Steel{} to {C:attention}Gold",
+					"Gains {C:mult}+#6#{} Mult when this turns a {C:attention}Mult{}, {C:attention}Wild{}, or {C:attention}Glass{} to {C:attention}Gold",
+					"Gains {C:money}$#2#{} when this turns #7#{C:inactive}(#8#){} of any other {C:attention}enhanced{} card to {C:attention}Gold",
+					"{C:inactive}(#9# + #10# + #11#)"
+				},
+			},
 			["j_fuseforce_gold_alloy"] = {
 				["name"] = "{C:money}Electrum Joker",
 				["text"] = {
@@ -1329,6 +1680,31 @@ return {
 					"{C:inactive}(#3# + #4#)"
 				},
 			},
+			["j_fuseforce_gold_two_heads"] = {
+				["name"] = "{C:money}Two Heads",
+				["text"] = {
+					"{C:inactive}are better than one",
+					"Copies abilities of",
+					"{C:attention}Joker{} to the left",
+					"and to the right",
+					"Copies twice if only",
+					"one {C:green}compatible{} Joker",
+					"{C:money}Retrigger all other",
+					"{X:money,C:white}Fusion{C:money} Jokers",
+					"{C:money}#1# times",
+					"{s:0.9,C:inactive}(#3# + #2#)"
+				},
+			},
+			["j_fuseforce_gold_cactus_juice"] = {
+				["name"] = "{C:money}Cactus Juice",
+				["text"] = {
+					"Sell this card to disable",
+					"the current {C:attention}Boss Blind{},",
+					"create a free {C:attention}Double Tag{},",
+					"and {X:money,C:white}Defuse{} this joker",
+					"{C:inactive}(#1# + #2#)"
+				},
+			},
 			["j_fuseforce_gold_skipper"] = {
 				["name"] = "{C:tsun_gradient_gold}Skipper",
 				["text"] = {
@@ -1342,6 +1718,19 @@ return {
 					"{s:0.9,C:inactive}(Currently {s:0.9,C:attention}#3#{s:0.9,C:inactive} out of {s:0.9,C:attention}5{s:0.9,C:inactive} extra cards played)",
 					"{C:inactive}(Currently {X:mult,C:white}X#1#{C:inactive} Mult)",
 					"{C:inactive}(#4# + #5#)"
+				},
+			},
+			["j_fuseforce_legendary_poxy"] = {
+				["name"] = "Poxy",
+				["text"] = {
+					"Gains {C:money}$#3#{} of {C:attention}sell value{} and",
+					"earns {C:money}$#3#{} at end of round",
+					"or when {C:attention}Blind{} is skipped",
+					"{s:0.2} ",
+					"Gives {X:mult,C:white}X#1#{} Mult for",
+					"each {C:money}$1{} of {C:attention}sell value",
+					"{C:inactive}(Currently {X:mult,C:white}X#2#{C:inactive} Mult)",
+					"{s:0.9,C:inactive}(#4# + #5#)"
 				},
 			},
 			["j_fuseforce_orta_diamonddemon"] = {
