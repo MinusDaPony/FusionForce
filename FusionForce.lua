@@ -341,7 +341,7 @@ function Card:can_fuse_card(juicing)
 			reqcheck = fusion.requirement()
 		end
 
-		return reqcheck and (to_big(fusion.cost) + to_big(G.GAME.bankrupt_at or 0)) <= to_big(G.GAME.dollars), fusion
+		return reqcheck and (fusion.cost + G.GAME.bankrupt_at or 0) <= G.GAME.dollars, fusion
 	end
 
 	return fusionjokers_can_fuse_card_ref(self, juicing)
@@ -5957,7 +5957,7 @@ FusionJokers.fusions:register_fusion {
 
 SMODS.Joker {
 	key = "extortion",
-	name = "Extortion",
+	name = "Price Gouging",
 	rarity = "fuse_fusion",
 	cost = 20,
 	unlocked = true,
@@ -5968,7 +5968,7 @@ SMODS.Joker {
 	attributes = {"mult", "sell_value", "scaling", "economy"},
 	atlas = "fuseforce_jokers",
 	pos = { x = 7, y = 9 },
-    artist_credits = {'minus'},
+    artist_credits = {'triangle'},
     config = {
 		extra = {	
 			valup = 1,
