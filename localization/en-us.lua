@@ -18,8 +18,10 @@ return {
 			["chancer_inactive"] = "doubled",
 			["fuseforce_plus"] = "+",
 			["fuseforce_minus"] = "-",
-			["fuseforce_active"] = "Level up next hand!",
-			["fuseforce_inactive"] = "Discard not used",
+			["fuseforce_active"] = "Active!",
+			["fuseforce_inactive"] = "inactive",
+			["molotov_active"] = "Level up next hand!",
+			["molotov_inactive"] = "Discard not used",
 			},
 		},
 	["descriptions"] = {
@@ -66,6 +68,36 @@ return {
 			},
 		},
 		["Partner"] = {
+			["pnr_fuseforce_hexxed"] = {
+				["name"] = "Hexxed",
+				["text"] = {
+					"{C:green}#1# in #2#{} chance to",
+					"create a {C:spectral}Spectral{} card",
+					"if played hand contains",
+					"a {C:attention}Six{} or a {C:attention}Straight",
+					"{C:inactive}(Must have room)",
+				},
+				["unlock"] = {
+					"Win a run with",
+					"{C:attention}Clairvoyant{} on",
+					"{C:attention}Gold Stake{} difficulty",
+				},
+			},
+			["pnr_fuseforce_hexxed_1"] = {
+				["name"] = "Hexxed",
+				["text"] = {
+					"{C:green}#1# in #2#{} chance to duplicate",
+					"or else create a {C:spectral}Spectral",
+					"card if played hand",
+					"contains a {C:attention}Six{} or a {C:attention}Straight",
+					"{C:inactive}(Must have room)",
+				},
+				["unlock"] = {
+					"Win a run with",
+					"{C:attention}Clairvoyant{} on",
+					"{C:attention}Gold Stake{} difficulty",
+				},
+			},
 			["pnr_fuseforce_offer"] = {
 				["name"] = "Offer",
 				["text"] = {
@@ -194,6 +226,43 @@ return {
 					"{C:attention}Gold Stake{} difficulty",
 				},
 			},
+			["pnr_fuseforce_cull"] = {
+				["name"] = "Cull",
+				["text"] = {
+					"Click to make {C:attention}inactive",
+					"or {C:attention}active{} at {C:dark_edition}lvl.1+",
+					"If you have no open {C:attention}joker",
+					"slots when {C:attention}Blind{} is selected,",
+					"{C:red}destroys{} the rightmost",
+					"{C:attention}joker{} to gain {C:white,X:mult}X#1#{} Mult",
+					"{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)",
+					"{C:inactive}#4#",
+				},
+				["unlock"] = {
+					"Win a run with",
+					"{C:attention}Serial Killer{} on",
+					"{C:attention}Gold Stake{} difficulty",
+				},
+			},
+			["pnr_fuseforce_cull_1"] = {
+				["name"] = "Cull",
+				["text"] = {
+					"{C:dark_edition}+#3#{} Joker Slot",
+					"Click to make {C:attention}inactive",
+					"or {C:attention}active{} at {C:dark_edition}lvl.1+",
+					"If you have no open {C:attention}joker",
+					"slots when {C:attention}Blind{} is selected,",
+					"{C:red}destroys{} the rightmost",
+					"{C:attention}joker{} to gain {C:white,X:mult}X#1#{} Mult",
+					"{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)",
+					"{C:inactive}#4#",
+				},
+				["unlock"] = {
+					"Win a run with",
+					"{C:attention}Serial Killer{} on",
+					"{C:attention}Gold Stake{} difficulty",
+				},
+			},
 			["pnr_fuseforce_prizes"] = {
 				["name"] = "Prizes",
 				["text"] = {
@@ -219,6 +288,18 @@ return {
 				["unlock"] = {
 					"Win a run with",
 					"{C:attention}Shadowman{} on",
+					"{C:attention}Gold Stake{} difficulty",
+				},
+			},
+			["pnr_fuseforce_squeeze"] = {
+				["name"] = "Squeeze",
+				["text"] = {
+					"Click to pay {C:money}$#1#{} to",
+					"draw {C:attention}#2#{} cards to hand",
+				},
+				["unlock"] = {
+					"Win a run with",
+					"{C:attention}Four Inch Gap{} on",
 					"{C:attention}Gold Stake{} difficulty",
 				},
 			},
@@ -653,6 +734,18 @@ return {
 					"{C:attention}Gold Stake{} difficulty",
 				},
 			},
+			["pnr_fuseforce_mini_minus"] = {
+				["name"] = "Mini Minus",
+				["text"] = {
+					"Click to pay {C:money}$#1#{} to",
+					"create a {C:spectral}Shadow",
+				},
+				["unlock"] = {
+					"Win a run with",
+					"{C:attention}Minus{} on",
+					"{C:attention}Gold Stake{} difficulty",
+				},
+			},
 			["pnr_fuseforce_birthday"] = {
 				["name"] = "Birthday",
 				["text"] = {
@@ -703,6 +796,26 @@ return {
 					"Inkyst",
 				}
 			},
+			['triangle'] = {
+				["text"] = {
+					"triangle_snack",
+				}
+			},
+			['numbuh214'] = {
+				["text"] = {
+					"Numbuh 214",
+				}
+			},
+			['r3venant'] = {
+				["text"] = {
+					"R3venantR3mnant",
+				}
+			},
+			['neatoqueen'] = {
+				["text"] = {
+					"neatoqueen",
+				}
+			},
 		},
 		["Joker"] = {
 			["j_fuseforce_clairvoyant"] = {
@@ -743,7 +856,7 @@ return {
 					"Adds {C:money}$#1#{} of {C:attention}sell value{} to every",
 					"owned {C:attention}Joker{} and {C:attention}Consumable{}",
 					"Debt is equal to sell value of",
-					"all owned {C:attention}Jokers{} added up",
+					"owned {C:attention}Jokers{} and {C:attention}Consumables{}",
 					"{C:inactive}(#3# + #4#)"
 				},
 			},
@@ -806,10 +919,10 @@ return {
 				["name"] = "Over and Out",
 				["text"] = {
 					"Each played {C:attention}10{} or {C:attention}4{} gives",
-					"{C:chips}+#1#{} Chips and {C:mult}+#2#{} Mult when scored,",
+					"{C:chips}+#1#{} Chips and {C:mult}+#2#{} Mult when scored",
 					"On {C:attention}final hand{} of round they also",
-					"give {C:white,X:chips}X#3#0{} Chips and {C:white,X:mult}X#4#{} Mult,",
-					"{C:attention}10{} and {C:attention}4{} card always score",
+					"give {C:white,X:chips}X#3#0{} Chips and {C:white,X:mult}X#4#{} Mult",
+					"{C:attention}10{} and {C:attention}4{} cards always score",
 					"{C:inactive}(#5# + #6#)"
 				},
 			},
@@ -851,7 +964,7 @@ return {
 				["name"] = "Masquerade",
 				["text"] = {
 					"{C:attention}Held in hand{} abilities",
-					"and played {C:attention}face{} cards",
+					"and played {C:attention}face cards",
 					"all retrigger {C:attention}#1#{} times",
 					"{C:attention}Held in hand face card",
 					"abilities retrigger again",
@@ -862,7 +975,7 @@ return {
 				["name"] = "Optimist",
 				["text"] = {
 					"{C:attention}+#1#{} hand size",
-					"{C:blue}#2#{} hands per round",
+					"{C:blue}#2#{} hand per round",
 					"{C:red}+#3#{} discards",
 					"{s:0.8,C:inactive}(#4# + #5#)"
 				},
@@ -870,23 +983,21 @@ return {
 			["j_fuseforce_fight_a_bull"] = {
 				["name"] = "Horse",
 				["text"] = {
-					"Gives {C:mult}+#3#{} Mult",
-					"and {C:chips}+#4#{} Chips",
+					"Gives {C:chips}+#4#{} Chips",
+					"and {C:mult}+#3#{} Mult",
 					"for every {C:money}$3{} you have",
-					"{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult)",
-					"{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips)",
+					"{s:0.8,C:inactive}(Currently {s:0.8,C:chips}+#2#{s:0.8,C:inactive} Chips and {s:0.8,C:mult}+#1#{s:0.8,C:inactive} Mult)",
 					"{C:inactive}(#5# + #6#)"
 				},
 			},
 			["j_fuseforce_melancholy_phantom"] = {
 				["name"] = "Melancholy Phantom",
 				["text"] = {
-					"Gains {X:mult,C:white}X0.25{} Mult and {C:chips}+8",
-					"Chips per {C:attention}playing card",
+					"Gains {C:chips}+#4#{} Chips and {X:mult,C:white}X#3#{}",
+					"Mult per {C:attention}playing card",
 					"added to your deck",
-					"{C:inactive}(Currently {X:mult,C:white}X#1#{C:inactive} Mult)",
-					"{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips)",
-					"{C:inactive}(#3# + #4#)"
+					"{s:0.8,C:inactive}(Currently {s:0.8,C:chips}+#2#{s:0.8,C:inactive} Chips and {s:0.8,X:mult,C:white}X#1#{s:0.8,C:inactive} Mult)",
+					"{C:inactive}(#5# + #6#)"
 				},
 			},
 			["j_fuseforce_solar_flare_joker"] = {
@@ -901,7 +1012,7 @@ return {
 			["j_fuseforce_blue_java"] = {
 				["name"] = "Blue Java",
 				["text"] = {
-					"{X:mult,C:white}X#1#{} Mult{}, {C:green}#3# in #4#{}",
+					"{X:mult,C:white}X#1#{} Mult, {C:green}#3# in #4#{}",
 					"chance to decrease",
 					"by {X:mult,C:white}X#2#{} Mult",
 					"at the end of a round",
@@ -963,19 +1074,19 @@ return {
 					"{V:1}#4#{} suit gives {X:mult,C:white}X#1#",
 					"Mult when scored,",
 					"and counts as all suits",
-					"{s:0.8}suit changes at end of round",
+					"{s:0.8}Suit changes at end of round",
 					"{s:0.8,C:inactive}(#5# + #6#)"
 				},
 			},
 			["j_fuseforce_skipper"] = {
 				["name"] = "Skipper",
 				["text"] = {
-					"Adds a fifth of the",
+					"Adds a tenth of the",
 					"sell value of all other",
 					"owned {C:attention}Jokers{} to {X:mult,C:white}XMult",
-					"Gains {X:mult,C:white}X0.25{} Mult",
-					"per {C:attention}Blind{} skipped this run",
-					"{C:money}$#2#{} when skipping a {C:attention}blind",
+					"Gains {X:mult,C:white}X0.25{} Mult per",
+					"{C:attention}Blind{} skipped this run",
+					"{C:money}$#2#{} when skipping a {C:attention}Blind",
 					"{C:inactive}(Currently {X:mult,C:white}X#1#{C:inactive} Mult)",
 					"{s:0.9,C:inactive}(#3# + #4#)"
 				},
@@ -997,9 +1108,9 @@ return {
 				["text"] = {
 					"When {C:attention}Blind{} is selected,",
 					"add one {C:attention}Stone{} card to deck",
-					"Played {C:attention}Stone{} cards become {C:attention}Wild{} cards",
-					"Each {C:attention}Wild card played gives",
-					"{C:chips}+#2#{} Chips{} and {X:mult,C:white}X#1#{} Mult",
+					"Played {C:attention}Stone{} cards become {C:attention}Wild",
+					"Each {C:attention}Wild{} card played gives",
+					"{C:chips}+#2#{} Chips and {X:mult,C:white}X#1#{} Mult",
 					"{C:inactive}(#3# + #4#)"
 				},
 			},
@@ -1073,7 +1184,7 @@ return {
 				},
 			},
 			["j_fuseforce_stew_and_dumplings"] = {
-				["name"] = "Stew and Dumplings",
+				["name"] = "Perpetual Stew",
 				["text"] = {
 					"{X:mult,C:white}X#1#{} Mult,",
 					"gains {X:mult,C:white}X#2#{} Mult",
@@ -1388,7 +1499,7 @@ return {
 				},
 			},
 			["j_fuseforce_extortion"] = {
-				["name"] = "Extortion",
+				["name"] = "Price Gouging",
 				["text"] = {
 					"Joker to the {C:attention}left{} gains {C:money}$#1#{} of sell value",
 					"for every {C:money}$5{} you have at end of round",
@@ -1508,7 +1619,9 @@ return {
 					"{C:green}#2# in #3#{} chance to give {X:mult,C:white}X#1#{} Mult",
 					"Chance increases per",
 					"{C:attention}hand{} played this round",
-					"{C:inactive}(#4# + #5#)"
+					"{C:green}#2# in #4#{} chance this card is",
+					"destroyed at end of round",
+					"{C:inactive}(#5# + #6#)"
 				},
 			},
 			["j_fuseforce_half_half"] = {
@@ -1528,6 +1641,61 @@ return {
 					"gain a permanent {C:red}+#2#{} Discard",
 					"{C:inactive}#3#",
 					"{C:inactive}(#4# + #5#)"
+				},
+			},
+			["j_fuseforce_peak_performance"] = {
+				["name"] = "{s:0.8}Peak Performance{}",
+				["text"] = {
+					"Gives {C:white,X:chips}X#1#{} Chips and",
+					"{X:red,C:white}X#2#{} Mult on {C:attention}final",
+					"{C:blue}hand{} of round when",
+					"{C:attention}#3# {C:red}discards{} remain",
+					"{s:0.8,C:inactive}(#4# + #5#)"
+				},
+			},
+			["j_fuseforce_hitchhiker"] = {
+				["name"] = "Hitchhiker",
+				["text"] = {
+					"Every played {C:attention}card{} permanently",
+					"gains {C:chips}+#1#{} Chips when scored",
+					"This Joker gains {C:mult}+#3#{} Mult per {C:attention}consecutive{}",
+					"hand played without a scoring {C:attention}face{} card",
+					"The {C:attention}first{} played face card permanently",
+					"gains the {C:mult}mult{} from this joker",
+					"{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)",
+					"{C:inactive}(#4# + #5#)"
+				},
+			},
+			["j_fuseforce_miner"] = {
+				["name"] = "Gold Miner",
+				["text"] = {
+					"When {C:attention}Blind{} is selected,",
+					"add one {C:attention}Stone{} card to deck",
+					"Played {C:attention}Stone{} cards become {C:attention}Gold",
+					"Each {C:attention}Gold{} card played gives",
+					"{C:chips}+#2#{} Chips and earns {C:money}$#1#{}",
+					"{C:inactive}(#3# + #4#)"
+				},
+			},
+			["j_fuseforce_theatre"] = {
+				["name"] = "Theatre",
+				["text"] = {
+					"Retrigger each played",
+					"{C:attention}Ace{}, {C:attention}2{}, {C:attention}3{}, {C:attention}4{}, {C:attention}5{},",
+					"and all {C:attention}face{} cards",
+					"{s:0.9,C:inactive}(#2# + #3#)"
+				},
+			},
+			["j_fuseforce_ydkj"] = {
+				["name"] = "{s:0.8}You Don't Know Joker{}",
+				["text"] = {
+					"Gains {X:mult,C:white}X#2#{} Mult and {C:money}$#3#{}",
+					"for every {C:attention}#5#{} or {C:blue}#4#{}",
+					"discarded this round",
+					"Only the {C:blue}second rank",
+					"changes every round",
+					"{C:inactive}(Currently {X:mult,C:white}X#1#{C:inactive} Mult)",
+					"{s:0.8,C:inactive}(#6# + #7#)"
 				},
 			},
 			["j_fuseforce_lighthouse"] = {
@@ -1708,7 +1876,7 @@ return {
 			["j_fuseforce_gold_skipper"] = {
 				["name"] = "{C:tsun_gradient_gold}Skipper",
 				["text"] = {
-					"Adds a fifth of the sell value of",
+					"Adds a tenth of the sell value of",
 					"all other owned {C:attention}Jokers{} to Mult",
 					"{s:0.9}Gains {s:0.9,X:mult,C:white}X0.25{s:0.9} Mult per {s:0.9,C:attention}Blind{s:0.9} skipped this run",
 					"Gain {C:money}$#2#{} when skipping a {C:attention}Blind",
@@ -1831,10 +1999,11 @@ return {
 					"{C:chips}+#1#{} Chips for each",
 					"{C:attention}Joker{} and {C:tarot}Consumable{} card",
 					"Gains {C:attention}+#4#{} Consumable slot",
-					"per #5# consumables used",
-					"{s:0.8,C:inactive}(Currently {s:0.8,C:attention}+#3#{s:0.8,C:inactive} slots and #6#/#5# towards another)",
+					"per {C:attention}#5#{} consumables used",
+					"{s:0.9}Need {s:0.9,C:attention}#6#{s:0.9} more per gained slot",
+					"{s:0.8,C:inactive}(Currently {s:0.8,C:attention}+#3#{s:0.8,C:inactive} slots, #8#/#7# to another)",
 					"{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips)",
-					"{C:inactive}(#7# + #8#)"
+					"{s:0.9,C:inactive}(#9# + #10#)"
 				},
 			},
 			["j_fuseforce_orta_perfidy"] = {
@@ -1856,10 +2025,102 @@ return {
 			["j_fuseforce_orta_necromancer"] = {
 				["name"] = "Lich",
 				["text"] = {
-					"{C:dark_edition}+1{} Joker slots",
-					"Effect is permanent if sold",
+					"{C:attention}+#1#{} Joker slots",
+					"{X:attention,C:white}X#2#{} Blind amount",
+					"Keep {C:dark_edition}1{} Joker slot if sold",
 					"during a {C:attention}Boss Blind",
-					"{C:inactive}(#1# + #2#)"
+					"{C:inactive}(#3# + #4#)"
+				},
+			},
+			["j_fuseforce_extra_art_heist"] = {
+				["name"] = "Art Heist",
+				["text"] = {
+					"{C:attention}+#1#{} Consumable Slots",
+					"Amount is the most",
+					"{C:attention}unique enhancements",
+					"in a scoring hand",
+					"{s:0.2} ",
+					"Gains {X:mult,C:white}X#3#{} Mult for",
+					"each {C:attention}unique enhancement",
+					"in scoring hand",
+					"{C:inactive}(Currently {X:mult,C:white}X#2#{C:inactive})",
+					"{C:inactive}(#4# + #5#)"
+				},
+			},
+			["j_fuseforce_extra_electrum"] = {
+				["name"] = "Electrum Joker",
+				["text"] = {
+					"{C:attention}Steel{} cards turn into {C:attention}Gold",
+					"when {C:blue}played{} or {C:red}discarded",
+					"{C:attention}Gold{} cards held in hand give {X:mult,C:white}X#2#{} Mult",
+					"{s:0.2} ",
+					"Earn {C:money}$#1#{} when this turns a {C:attention}Steel{} card",
+					"to {C:attention}Gold{} or when a {C:attention}Gold{} card scores",
+					"{C:inactive}(#3# + #4#)"
+				},
+			},
+			["j_fuseforce_extra_furnace"] = {
+				["name"] = "Blast Furnace",
+				["text"] = {
+					"{C:attention}Gold{} cards turn into {C:attention}Steel",
+					"when {C:blue}played{} or {C:red}discarded",
+					"{s:0.2} ",
+					"Gives {X:mult,C:white}X#3#{} Mult for each",
+					"Steel Card in your {C:attention}full deck",
+					"{s:0.2} ",
+					"Gains {X:mult,C:white}X#3#{} Mult and {C:money}$#1#{} when",
+					"this turns a {C:attention}Gold{} card to {C:attention}Steel",
+					"{s:0.2} ",
+					"Earn {C:money}$#1#{} when a {C:attention}Steel{} card is",
+					"held in hand at end of round",
+					"{C:inactive}(Currently {X:mult,C:white}X#4#{C:inactive} + {X:mult,C:white}X#2#{C:inactive})",
+					"{C:inactive}(#5# + #6#)"
+				},
+			},
+			["j_fuseforce_extra_orange_card"] = {
+				["name"] = "Orange Card",
+				["text"] = {
+					"Earn {C:money}$#1#{} and gains",
+					"{C:red}+#2#{} Mult when any {C:attention}Blind{} or",
+					"{C:attention}Booster Pack{} is skipped",
+					"{C:inactive}(Currently {C:red}+#3#{C:inactive} Mult)",
+					"{C:inactive}(#4# + #5#)"
+				},
+			},
+			["j_fuseforce_extra_string_theory"] = {
+				["name"] = "String Theory",
+				["text"] = {
+					"{C:chips}+#1#{} Chips and {C:mult}+#2#{} Mult",
+					"for each {C:attention}Joker{} card",
+					"{X:money,C:white}Fusions{} count twice",
+					"{s:0.8,C:inactive}(Currently {s:0.8,C:chips}+#3#{s:0.8,C:inactive} Chips & {s:0.8,C:mult}+#4#{s:0.8,C:inactive} Mult)",
+					"{C:inactive}(#5# + #6#)"
+				},
+			},
+			["j_fuseforce_extra_flag_carrier"] = {
+				["name"] = "Flag Carrier",
+				["text"] = {
+					"Gains {C:chips}Chips{} equal to {C:attention}#4#{} times",
+					"total {C:red}Discards{} left each round",
+					"Gains {C:mult}Mult{} equal to {C:attention}#2#{} times",
+					"total {C:blue}Hands{} left each round",
+					"{s:0.8,C:inactive}(Currently {s:0.8,C:chips}+#3#{s:0.8,C:inactive} Chips & {s:0.8,C:mult}+#1#{s:0.8,C:inactive} Mult)",
+					"{C:inactive}(#5# + #6#)"
+				},
+			},
+			["j_fuseforce_extra_blue_planet"] = {
+				["name"] = "Blue Planet",
+				["text"] = {
+					"{C:chips}+#3#{} Chips for every",
+					"{C:attention}Hand Level{} above {C:attention}level one",
+					"Earn {C:money}$#1#{} at end of round per",
+					"unique {C:planet}Planet{} used this run",
+					"Scored cards with a {C:attention}Blue Seal",
+					"give {C:chips}+#5#{} Chips, {C:money}$#6#{}, and create",
+					"a {C:planet}Planet Card{} of the played hand",
+					"{C:inactive}(Must have room)",
+					"{C:inactive}(Currently {C:chips}+#4#{C:inactive} Chips and {C:money}$#2#{C:inactive})",
+					"{C:inactive}(#7# + #8#)"
 				},
 			},
 		},
