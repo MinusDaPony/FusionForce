@@ -47,6 +47,88 @@ Partner_API.inject("pnr_partner_blaze", "link_config", {j_fuseforce_solar_flare_
 end
 
 Partner_API.Partner{
+    key = "hexxed",
+    name = "Hexxed Partner",
+    unlocked = false,
+    discovered = true,
+    atlas = "fuseforce_partners",
+    pos = {x = 0, y = 0},
+    config = {
+        extra = {
+            odds = 6
+        }
+    },
+    link_config = {j_fuseforce_clairvoyant = 1},
+    loc_vars = function(self, info_queue, card)
+    local link_level = self:get_link_level()
+    local key = self.key
+    local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, 'hexxed')
+    if link_level == 1 then
+        key = key.."_"..link_level
+    end
+        return {
+            key = key,
+            vars = {
+            numerator,
+            denominator
+            }
+        }
+    end,
+    calculate = function(self, card, context)        
+        if (context.individual and context.cardarea == G.play and context.other_card:get_id() == 6) or (context.joker_main and next(context.poker_hands['Straight'])) then
+            if SMODS.pseudorandom_probability(card, 'hexxed', 1, card.ability.extra.odds, 'hexxed', false) then
+                if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+                    local link_level = self:get_link_level()
+                    local spectrals = {}
+                    for i = 1, #G.consumeables.cards do
+                        if G.consumeables.cards[i].ability.set == 'Spectral' then
+                            spectrals[#spectrals + 1] = G.consumeables.cards[i]
+                        end
+                    end
+                    if link_level and #spectrals > 0 then
+                        local chosen_spectral = pseudorandom_element(spectrals, 'hexxed')
+                        local copied_spectral = copy_card(chosen_spectral)
+                        G.consumeables:emplace(copied_spectral)
+                    else
+                        G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+                        return {
+                            extra = {
+                                message = localize('k_plus_spectral'),
+                                message_card = card,
+                                func = function() -- This is for timing purposes, everything here runs after the message
+                                    G.E_MANAGER:add_event(Event({
+                                        func = (function()
+                                            SMODS.add_card {
+                                                set = "Spectral",
+                                                key_append = 'hexxed' -- Optional, useful for manipulating the random seed and checking the source of the creation in `in_pool`.
+                                            }
+                                            G.GAME.consumeable_buffer = 0
+                                            return true
+                                        end)
+                                    }))
+                                end
+                            },
+                        }
+                    end
+                else
+                    return { message = localize('k_no_room_ex'), message_card = card }
+                end
+            end
+        end
+    end,
+    check_for_unlock = function(self, args)
+        for _, v in pairs(G.P_CENTER_POOLS["Joker"]) do
+            if v.key == "j_fuseforce_clairvoyant" then
+                if get_joker_win_sticker(v, true) >= 8 then
+                    return true
+                end
+                break
+            end
+        end
+    end
+}
+
+Partner_API.Partner{
     key = "offer",
     name = "Offer Partner",
     unlocked = false,
@@ -421,6 +503,102 @@ Partner_API.Partner{
 }
 
 Partner_API.Partner{
+    key = "cull",
+    name = "Cull Partner",
+    unlocked = false,
+    discovered = true,
+    atlas = "fuseforce_partners",
+    pos = {x = 1, y = 1},
+    config = {
+        extra = {
+            x_mult_mod = 0.2,
+            x_mult = 1,
+            slots = 0,
+            active = 1
+        }
+    },
+    link_config = {j_ceremonial = 1, j_madness = 1, j_fuseforce_serial_killer = 2, j_fuseforce_gold_serial_killer = 3},
+    loc_vars = function(self, info_queue, card)
+    local link_level = self:get_link_level()
+    local key = self.key
+    if link_level == 2 or link_level == 3 then key = key.."_1" end
+        return {
+            key = key,
+            vars = {
+            card.ability.extra.x_mult_mod,
+            card.ability.extra.x_mult,
+            card.ability.extra.slots,
+            localize{type = 'variable', key = (card.ability.extra.active == 1 and 'fuseforce_active' or 'fuseforce_inactive')}
+            }
+        }
+    end,
+    calculate = function(self, card, context)
+        local link_level = self:get_link_level()
+        if (link_level == 2 or link_level == 3) and card.ability.extra.slots == 0 then
+            card.ability.extra.slots = 1
+            modify_joker_slot_count(1)
+        end
+        if (not link_level or link_level == 1) and card.ability.extra.slots == 1 then
+            card.ability.extra.slots = 0
+            modify_joker_slot_count(-1)
+        end
+        if context.partner_click then
+            if (link_level == 1 or link_level == 2 or link_level == 3 or link_level == 4) and card.ability.extra.active == 1 then
+                card.ability.extra.active = 0
+                card:juice_up(1, 1)
+                card.config.center.pos = {x = 5, y = 1}
+                card:set_sprites(card.config.center)
+            elseif (link_level == 1 or link_level == 2 or link_level == 3 or link_level == 4) and card.ability.extra.active == 0 then
+                card.ability.extra.active = 1
+                card:juice_up(1, 1)
+                card.config.center.pos = {x = 1, y = 1}
+                card:set_sprites(card.config.center)
+            end
+        end
+        if context.setting_blind then
+            local sliced_card = nil
+            if (card.ability.extra.active == 1 or not link_level) and #G.jokers.cards >= G.jokers.config.card_limit then
+                sliced_card = G.jokers.cards[#G.jokers.cards]
+            end
+            if sliced_card and not sliced_card.getting_sliced then
+                sliced_card.getting_sliced = true
+                G.GAME.joker_buffer = (G.GAME.joker_buffer or 0) - 1
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        G.GAME.joker_buffer = 0
+                        card.ability.extra.x_mult = card.ability.extra.x_mult + card.ability.extra.x_mult_mod
+                        card:juice_up(0.8, 0.8)
+                        sliced_card:start_dissolve({ HEX("57ecab") }, nil, 1.6)
+                        play_sound('slice1', 0.96 + math.random() * 0.08)
+                        return true
+                    end
+                }))
+                return {
+                    message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.x_mult + card.ability.extra.x_mult_mod } },
+                    colour = G.C.RED,
+                    no_juice = true
+                }
+            end
+        end
+        if context.joker_main and card.ability.extra.x_mult > 0 then
+            return {
+                x_mult = card.ability.extra.x_mult
+            }
+        end
+    end,
+    check_for_unlock = function(self, args)
+        for _, v in pairs(G.P_CENTER_POOLS["Joker"]) do
+            if v.key == "j_fuseforce_serial_killer" or v.key == "j_fuseforce_gold_serial_killer" then
+                if get_joker_win_sticker(v, true) >= 8 then
+                    return true
+                end
+                break
+            end
+        end
+    end
+}
+
+Partner_API.Partner{
     key = "prizes",
     name = "Prizes Partner",
     unlocked = false,
@@ -515,6 +693,76 @@ Partner_API.Partner{
 }
 
 Partner_API.Partner{
+    key = "squeeze",
+    name = "Squeeze Partner",
+    unlocked = false,
+    discovered = true,
+    atlas = "fuseforce_partners",
+    pos = {x = 3, y = 1},
+    config = {
+        extra = {
+            cost = 4,
+            draw = 2
+        }
+    },
+    link_config = {j_fuseforce_four_inch_gap = 1},
+    loc_vars = function(self, info_queue, card)
+    local link_level = self:get_link_level()
+        return {
+            vars = {
+            link_level == 1 and 1 or card.ability.extra.cost,
+            link_level == 1 and 1 or card.ability.extra.draw
+            }
+        }
+    end,
+    calculate = function(self, card, context)
+        if context.partner_click and G.STATE == G.STATES.SELECTING_HAND and G.hand and G.hand.cards[1] and G.deck and G.deck.cards[1] then
+            local link_level = self:get_link_level()
+            local hand_space = math.min(#G.deck.cards, link_level == 1 and 1 or card.ability.extra.draw)
+            if (to_big(G.GAME.dollars) - to_big(G.GAME.bankrupt_at)) >= to_big(link_level == 1 and 1 or card.ability.extra.cost) then
+                for i = 1, hand_space do
+                    draw_card(G.deck, G.hand, i*100/hand_space, "up", true)
+                end
+                ease_dollars(link_level == 1 and -1 or -card.ability.extra.cost)
+                card_eval_status_text(card, "dollars", link_level == 1 and -1 or -card.ability.extra.cost)
+            end
+        end
+    end,
+    check_for_unlock = function(self, args)
+        for _, v in pairs(G.P_CENTER_POOLS["Joker"]) do
+            if v.key == "j_fuseforce_four_inch_gap" then
+                if get_joker_win_sticker(v, true) >= 8 then
+                    return true
+                end
+                break
+            end
+        end
+    end
+}
+
+local hover = Card.hover
+function Card:hover()
+    hover(self)
+--  if self.config.center_key == 'pnr_fuseforce_squeeze' and self.T.w == G.CARD_W * 46 / 71 and self.config.center.discovered then
+    if self.config.center_key == 'pnr_fuseforce_squeeze' and self.config.center.discovered then
+--      ease_value(self.T, 'w', -(self.T.w*0.25), nil, nil, nil, nil, 'elastic')
+        self.config.center.pos = {x = 4, y = 1}
+        self:set_sprites(self.config.center)
+    end
+end
+
+local stop_hover = Card.stop_hover
+function Card:stop_hover()
+    stop_hover(self)
+--  if self.config.center_key == 'pnr_fuseforce_squeeze' and self.T.w < G.CARD_W * 46 / 71 and self.config.center.discovered then
+    if self.config.center_key == 'pnr_fuseforce_squeeze' and self.config.center.discovered then
+--      ease_value(self.T, 'w', G.CARD_W * 23 / 142)
+        self.config.center.pos = {x = 3, y = 1}
+        self:set_sprites(self.config.center)
+    end
+end
+
+Partner_API.Partner{
     key = "hydra",
     name = "Hydra Partner",
     unlocked = false,
@@ -589,21 +837,21 @@ Partner_API.Partner{
     },
     link_config = {j_fuseforce_black_hearted = 1},
     loc_vars = function(self, info_queue, card)
-    local link_level = self:get_link_level()
+    local link_level = self:get_link_level() or 0
     --if link_level == 1 then card.ability.extra.cost = 1 else card.ability.extra.cost = 3 end
         return {
             vars = {
-            card.ability.extra.cost - (link_level or 0 * 2)
+            card.ability.extra.cost - (link_level * 2)
             }
         }
     end,
     calculate = function(self, card, context)
         if context.partner_click and #G.consumeables.highlighted == 1 then
             local suitor = G.consumeables.highlighted[1]
-            local link_level = self:get_link_level()
-            if (to_big(G.GAME.dollars) - to_big(G.GAME.bankrupt_at)) >= to_big(card.ability.extra.cost - (link_level * 2) or 0) then
+            local link_level = self:get_link_level() or 0
+            if (to_big(G.GAME.dollars) - to_big(G.GAME.bankrupt_at)) >= to_big(card.ability.extra.cost + (link_level * 2)) then
                 if suitor.config.center_key == 'c_star' then
-                    ease_dollars(-card.ability.extra.cost - (link_level * 2) or 0)
+                    ease_dollars(-card.ability.extra.cost + (link_level * 2))
                     G.E_MANAGER:add_event(Event({
                         trigger = 'after',
                         delay = 0.4,
@@ -618,7 +866,7 @@ Partner_API.Partner{
                         end
                     }))
                 elseif suitor.config.center_key == 'c_sun' then
-                    ease_dollars(-card.ability.extra.cost - (link_level * 2) or 0)
+                    ease_dollars(-card.ability.extra.cost + (link_level * 2))
                     G.E_MANAGER:add_event(Event({
                         trigger = 'after',
                         delay = 0.4,
@@ -633,7 +881,7 @@ Partner_API.Partner{
                         end
                     }))
                 elseif suitor.config.center_key == 'c_world' then
-                    ease_dollars(-card.ability.extra.cost - (link_level * 2) or 0)
+                    ease_dollars(-card.ability.extra.cost + (link_level * 2))
                     G.E_MANAGER:add_event(Event({
                         trigger = 'after',
                         delay = 0.4,
@@ -648,7 +896,7 @@ Partner_API.Partner{
                         end
                     }))
                 elseif suitor.config.center_key == 'c_moon' then
-                    ease_dollars(-card.ability.extra.cost - (link_level * 2) or 0)
+                    ease_dollars(-card.ability.extra.cost + (link_level * 2))
                     G.E_MANAGER:add_event(Event({
                         trigger = 'after',
                         delay = 0.4,
@@ -1405,7 +1653,7 @@ Partner_API.Partner{
                         func = function()
                             card.ability.extra.flip = 2
                             card:juice_up(1, 1)
-                            card.config.center.pos = {x = 2, y = 6}
+                            card.config.center.pos = {x = 5, y = 6}
                             card:set_sprites(card.config.center)
                             return true;
                         end
@@ -1426,7 +1674,7 @@ Partner_API.Partner{
 					func = function()
 						card.ability.extra.flip = 2
 						card:juice_up(1, 1)
-						card.config.center.pos = {x = 2, y = 6}
+						card.config.center.pos = {x = 5, y = 6}
 						card:set_sprites(card.config.center)
                         return true;
                     end
@@ -1655,7 +1903,7 @@ Partner_API.Partner{
     if link_level == 1 then card.ability.extra.benefits = 3 end
         return {
             vars = {
-            card.ability.extra.chips,
+            card.ability.extra.chips * G.GAME.current_round.discards_left,
             card.ability.extra.chips_mod * card.ability.extra.benefits
             }
         }
@@ -1822,3 +2070,54 @@ Partner_API.Partner{
     end
 }
 end
+
+Partner_API.Partner{
+    key = "mini_minus",
+    name = "Mini Minus",
+    unlocked = false,
+    discovered = true,
+    atlas = "fuseforce_partners",
+    pos = {x = 5, y = 0},
+    config = {
+        extra = {
+            cost = 8
+        }
+    },
+    link_config = {j_fuseforce_legendary_minus = 1},
+    loc_vars = function(self, info_queue, card)
+    local link_level = self:get_link_level()
+        return {
+            vars = {
+            card.ability.extra.cost / (link_level or 0 + 1)
+            }
+        }
+    end,
+    calculate = function(self, card, context)
+        if context.partner_click and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+            local link_level = self:get_link_level()
+            if (to_big(G.GAME.dollars) - to_big(G.GAME.bankrupt_at)) >= to_big(card.ability.extra.cost / (link_level or 0 + 1)) then
+                ease_dollars(-card.ability.extra.cost / (link_level or 0 + 1))
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.4,
+                    func = function() 
+                        local spawn_shadow = SMODS.create_card({area = G.consumeables, set = 'Spectral', key = 'c_fuseforce_shadow'})
+                        spawn_shadow:add_to_deck()
+                        G.consumeables:emplace(spawn_shadow)
+                        return true
+                    end
+                }))
+            end
+        end
+    end,
+    check_for_unlock = function(self, args)
+        for _, v in pairs(G.P_CENTER_POOLS["Joker"]) do
+            if v.key == "j_fuseforce_legendary_minus" then
+                if get_joker_win_sticker(v, true) >= 8 then
+                    return true
+                end
+                break
+            end
+        end
+    end
+}

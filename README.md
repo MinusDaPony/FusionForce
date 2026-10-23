@@ -3,58 +3,66 @@
 
 Requires Fusion Jokers mod (https://github.com/wingedcatgirl/Fusion-Jokers)
 
-Currently contains 80+ fusions using Vanilla Jokers! That's a fusion for every single vanilla (non-legendary) Joker!
+Currently contains 86+ fusions using Vanilla Jokers! That's a fusion for every single vanilla (non-legendary) Joker!
 
 Cross-Mod content:
 - Ortalab has 10+ fusions! (Also artist credit display for the individual cards)
+- Extra Credit has 7+ fusions! (The Fusion Force version of Alloy is disabled while this mod is active)
 - CardSleeves (One Sleeve version of the deck)
-- Partner with 20+ new choices, and compatibility with base ones
+- Partner with 24+ new choices, and compatibility with base ones
 - Tsunami (One gold fusion. Mostly excludes this mod because Splash having so many fusions causes the shop and collection wiggle to go nuts. Shadow spectral also ignores Splash or else it would generate that a LOT. Also Tsunami has a dedicated spectral for Splash already.)
 
 ## changelog
 
-V1.3.1
+V1.3.2
 
 ### Bugfixes:
-It took until now for me to realize that `= {}` and `= nil` are NOT the same thing. That's why Magnetize was causing crashes.
+Easter Egg now applies Tarot bonus to Hermit and Temperence in booster packs.
 
-Suitable price not updating quickly enough fixed.
+Rewards Card no longer conflicts with other debt jokers, but still has a delayed update requiring hover over.
 
-Shadowman now works within booster packs.
+Soothsayer was spawning too many planets at end of round, now fixed.
 
-Voucher code reworked as they seemed to have stopped working to remove stickers at some point.
+Paranormal Joker's upgrade text will no longer appear multiple times when blueprinted.
 
-Ratio Road now correctly displays the Xmult it gives and the amount of Enhanced cards needed.
+Cactus Juice no longer spawns extra cards if you have Two-Heads.
+
+Shadow can no longer be used on jokers that are already negative when using it's Minus Deck effect.
+
+Suitable partner no longer crashes when used unboosted.
 
 
 ### Balance:
-Gold Fusions can now be disabled in the config.
+All fusions are now $2 more expensive to match closer to the original mod's prices, and for general balance.
 
-Two Heads has been restored to an older version that is now worth using even when you don't have any other fused cards.
+Skipper gives half as much XMult from sell value. Fused jokers have such high sell costs that it was making Skipper too strong.
 
-Nice has been buffed to have it's 1/9 chance now give a booster pack tag instead of a random card.
+Energy Drink now takes on the chips from Icecream to make it a fusion worth getting even if you aren't using a straight build.
 
-Shadowman now changes effect if you get an extra.
+Kintsugi now scores XMult in two separate amounts as a small buff.
 
-Hybrid Fusion no longer gives Mult or destroys cards, it instead creates a random card and adds it to your hand face down if you play more than 3 on your first turn.
+Paranormal Joker gives half as much XMult for used Spectrals.
 
-Cut and Paste Joker might have been giving 1 retrigger even when using a full hand, this has been changed to give no retriggers in that situation to fit it's description, as was always intended.
+Art Heist (Ortalab) nerfed to now have a scaling required amount of consumables as it was getting out of hand.
+
+Lich (Ortalab) remade to help with a bug. Didn't even help. Oops. New effect is regular Grave Digger that is worth selling in a boss blind.
+
 
 ### Other:
-Moorstone renamed to Geode Joker and given new art.
+Gold fusions are no longer on by default.
 
-Straight Man art redone.
+Extortion renamed to Price Gouging and given new art.
+
+Onwards partner now displays +Chips the same way Flag Bearer displays +mult, by adding the discards into the amount.
+
+Stew and Dumplings renamed to Perpetual Stew.
 
 ### Added Content:
-- Fusions: Millstone, Fortified Joker, Easter Egg, Missing Poster, Extortion, Taurus, Torus, Full of Stars, Circus Tickets, Comeback, Colour Guard, The Aristocrats, Cactus Juice, Golden Bantam, Half & Half Joker, Molotov Cocktail
+- Fusions: Banana Bunch, Peak Performance, Hitchhiker, Gold Miner, Theatre, You Don't Know Joker
 
-- Triple Fusions: Midas Joker
+- Extra Credit Fusions: Art Heist, Electrum Joker, Blast Furnace, Orange Card, String Theory, Flag Carrier, Blue Planet
 
-- Partners: Divine, Build, Hydra
-
-- Gold Fusions: Two Heads, Cactus Juice
-
-- Secret Fusions: ****
+- Partners: Hexxed, Cull, Squeeze
 
 ### Remaining Bugs:
-Divine Partner can on rare occasion refund $1 on rerolls after buying a free planet. Onward Partner cannot display a message to show it lost Chips, any attempt to make it do so gives nonsense "card = nil" crashes. Rewards Card probably negates other debt based jokers. Bargaining Chips doesn't show confirmation message of the blind being counted. Card Collection says "+1 Joker" even when it gives +2. Having 3 cards that can all fuse with each to make 3 different fusions bugs out the fusion selection and prevents any from being fused.
+The fusion vouchers do not correct the joker sell value when rental is removed, and they dont update sticker status instantly. Divine Partner can on rare occasion refund $1 on rerolls after buying a free planet. Onward Partner cannot display a message to show it lost Chips, any attempt to make it do so gives nonsense "card = nil" crashes. Rewards Card can be slightly abused by buying things before it updates its values. Bargaining Chips doesn't show confirmation message of the blind being counted. Card Collection says "+1 Joker" even when it gives +2. Having 3 cards that can all fuse with each to make 3 different fusions bugs out the fusion selection and prevents any from being fused.

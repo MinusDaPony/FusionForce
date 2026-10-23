@@ -9,7 +9,7 @@ SMODS.Joker {
     key = "orta_diamonddemon",
     name = "Diamond Demon",
     rarity = "fuse_fusion",
-    cost = 16,
+    cost = 18,
 	unlocked = true,
 	discovered = false,
     blueprint_compat = true,
@@ -19,6 +19,7 @@ SMODS.Joker {
     atlas = "fuseforce_orta_jokers",
     pos = {x = 0, y = 0},
     artist_credits = {'itayfeder'},
+    dependencies = {"ortalab"},
     config = {
 		extra = {
             suit = "Diamonds",
@@ -74,14 +75,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_ortalab_generous" },
         { name = "j_ortalab_fools_gold"}
-    }, cost = 8, result_joker = "j_fuseforce_orta_diamonddemon"
+    }, cost = 10, result_joker = "j_fuseforce_orta_diamonddemon"
 }
 
 SMODS.Joker {
     key = "orta_heartmimic",
     name = "Heart Mimic",
     rarity = "fuse_fusion",
-    cost = 18,
+    cost = 20,
 	unlocked = true,
 	discovered = false,
     blueprint_compat = true,
@@ -92,6 +93,7 @@ SMODS.Joker {
     atlas = "fuseforce_orta_jokers",
     pos = {x = 1, y = 0},
     artist_credits = {'minus'},
+    dependencies = {"ortalab"},
     config = {
 		extra = {
             suit = "Hearts",
@@ -138,14 +140,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_ortalab_chastful" },
         { name = "j_ortalab_amber_mosquito"}
-    }, cost = 10, result_joker = "j_fuseforce_orta_heartmimic"
+    }, cost = 12, result_joker = "j_fuseforce_orta_heartmimic"
 }
 
 SMODS.Joker {
     key = "orta_spadeslime",
     name = "Spade Slime",
     rarity = "fuse_fusion",
-    cost = 18,
+    cost = 20,
 	unlocked = true,
 	discovered = false,
     blueprint_compat = true,
@@ -155,6 +157,7 @@ SMODS.Joker {
     atlas = "fuseforce_orta_jokers",
     pos = {x = 2, y = 0},
     artist_credits = {'minus'},
+    dependencies = {"ortalab"},
     config = {
 		extra = {
             suit = "Spades",
@@ -206,14 +209,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_ortalab_patient" },
         { name = "j_ortalab_dripstone"}
-    }, cost = 10, result_joker = "j_fuseforce_orta_spadeslime"
+    }, cost = 12, result_joker = "j_fuseforce_orta_spadeslime"
 }
 
 SMODS.Joker {
     key = "orta_clubzombie",
     name = "Club Zombie",
     rarity = "fuse_fusion",
-    cost = 18,
+    cost = 20,
 	unlocked = true,
 	discovered = false,
     blueprint_compat = true,
@@ -223,6 +226,7 @@ SMODS.Joker {
     atlas = "fuseforce_orta_jokers",
     pos = {x = 3, y = 0},
     artist_credits = {'itayfeder'},
+    dependencies = {"ortalab"},
     config = {
 		extra = {
             suit = "Clubs",
@@ -266,14 +270,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_ortalab_abstemious" },
         { name = "j_ortalab_basalt_column"}
-    }, cost = 10, result_joker = "j_fuseforce_orta_clubzombie"
+    }, cost = 12, result_joker = "j_fuseforce_orta_clubzombie"
 }
 
 SMODS.Joker {
     key = "orta_blinded_by_science",
     name = "Blinded By Science",
     rarity = "fuse_fusion",
-    cost = 22,
+    cost = 24,
 	unlocked = true,
 	discovered = false,
     blueprint_compat = true,
@@ -283,6 +287,7 @@ SMODS.Joker {
     atlas = "fuseforce_orta_jokers",
     pos = {x = 4, y = 0},
     artist_credits = {'gappie'},
+    dependencies = {"ortalab"},
     config = {
 		extra = {
             chips = 150,
@@ -369,14 +374,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_ortalab_protostar" },
         { name = "j_ortalab_stargazing", carry_stat = "xmult" }
-    }, cost = 12, result_joker = "j_fuseforce_orta_blinded_by_science"
+    }, cost = 14, result_joker = "j_fuseforce_orta_blinded_by_science"
 }
 
 SMODS.Joker {
     key = "orta_dangerous_duo",
     name = "Dangerous Duo",
     rarity = "fuse_fusion",
-    cost = 18,
+    cost = 20,
 	unlocked = true,
 	discovered = false,
     blueprint_compat = true,
@@ -386,6 +391,7 @@ SMODS.Joker {
     atlas = "fuseforce_orta_jokers",
     pos = {x = 0, y = 1},
     artist_credits = {'itayfeder'},
+    dependencies = {"ortalab"},
     config = {
 		extra = {
             xchips = 3,
@@ -443,14 +449,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_ortalab_pitch_mitch" },
         { name = "j_ortalab_red_fred"}
-    }, cost = 10, result_joker = "j_fuseforce_orta_dangerous_duo"
+    }, cost = 12, result_joker = "j_fuseforce_orta_dangerous_duo"
 }
 
 SMODS.Joker {
     key = "orta_insider_trader",
     name = "Insider Trader Joker",
     rarity = "fuse_fusion",
-    cost = 17,
+    cost = 19,
 	unlocked = true,
 	discovered = false,
     blueprint_compat = true,
@@ -460,6 +466,7 @@ SMODS.Joker {
     atlas = "fuseforce_orta_jokers",
     pos = {x = 1, y = 1},
     artist_credits = {'alex'},
+    dependencies = {"ortalab"},
     config = {
 		extra = {
             dollars = 1,
@@ -508,14 +515,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_ortalab_business" },
         { name = "j_ortalab_dnd", carry_stat = "dollars" }
-    }, cost = 6, result_joker = "j_fuseforce_orta_insider_trader"
+    }, cost = 8, result_joker = "j_fuseforce_orta_insider_trader"
 }
 
 SMODS.Joker {
     key = "orta_physicist",
     name = "Physicist",
     rarity = "fuse_fusion",
-    cost = 18,
+    cost = 20,
 	unlocked = true,
 	discovered = false,
     blueprint_compat = true,
@@ -525,6 +532,7 @@ SMODS.Joker {
     atlas = "fuseforce_orta_jokers",
     pos = {x = 2, y = 1},
     artist_credits = {'minus'},
+    dependencies = {"ortalab"},
     config = {
 		extra = {
             hand_size = 4,
@@ -585,14 +593,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_ortalab_cardist" },
         { name = "j_ortalab_klutz"}
-    }, cost = 10, result_joker = "j_fuseforce_orta_physicist"
+    }, cost = 12, result_joker = "j_fuseforce_orta_physicist"
 }
 
 SMODS.Joker {
     key = "orta_art_heist",
     name = "Art Heist",
     rarity = "fuse_fusion",
-    cost = 22,
+    cost = 24,
 	unlocked = true,
 	discovered = false,
     blueprint_compat = true,
@@ -602,12 +610,14 @@ SMODS.Joker {
     atlas = "fuseforce_orta_jokers",
     pos = {x = 4, y = 1},
     artist_credits = {'minus'},
+    dependencies = {"ortalab"},
     config = {
 		extra = {
             chips = 25,
             slots = 0,
             slots_add = 1,
-            target = 9,
+            target = 8,
+            target_add = 2,
             joker1 = "j_ortalab_art_gallery",
             joker2 = "j_ortalab_forklift"
     	}
@@ -621,7 +631,9 @@ SMODS.Joker {
             card.ability.extra.slots,
             card.ability.extra.slots_add,
             card.ability.extra.target,
-            (G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.all or 0) - (card.ability.extra.target * card.ability.extra.slots),
+            card.ability.extra.target_add,
+            card.ability.extra.target + (card.ability.extra.slots * card.ability.extra.target_add),
+            (G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.all or 0) - (card.ability.extra.slots == 0 and 0 or ((card.ability.extra.target + (card.ability.extra.slots - 1)) * card.ability.extra.slots)),
             localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'},
             localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
 		}
@@ -635,7 +647,7 @@ SMODS.Joker {
                 colour = G.C.CHIPS
             }
         end
-        if context.using_consumeable and math.max(0,math.floor(G.GAME.consumeable_usage_total.all/card.ability.extra.target)) > card.ability.extra.slots then
+        if context.using_consumeable and math.max(0,math.floor(G.GAME.consumeable_usage_total.all/(card.ability.extra.target + card.ability.extra.slots))) > card.ability.extra.slots then
             card.ability.extra.slots = card.ability.extra.slots + card.ability.extra.slots_add
             G.consumeables:change_size(card.ability.extra.slots_add)
             card:juice_up()
@@ -652,12 +664,36 @@ SMODS.Joker {
         end
     end,
     add_to_deck = function(self, card, from_debuff)
-        if math.max(0,math.floor((G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.all or 0)/card.ability.extra.target)) > 0 and not card.ability.extra.triggered then
-            card.ability.extra.slots = 1 * math.max(0,math.floor(G.GAME.consumeable_usage_total.all/card.ability.extra.target))
+        if math.max(0,math.floor((G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.all or 0)/2)) == 49 then
+            card.ability.extra.slots = 7
             G.consumeables:change_size(card.ability.extra.slots)
             card_eval_status_text(card, 'extra', nil, nil, nil, {message = 'more slots'})
-            card.ability.extra.triggered = true
+        elseif math.max(0,math.floor((G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.all or 0)/2)) == 39 then
+            card.ability.extra.slots = 6
+            G.consumeables:change_size(card.ability.extra.slots)
+            card_eval_status_text(card, 'extra', nil, nil, nil, {message = 'more slots'})
+        elseif math.max(0,math.floor((G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.all or 0)/2)) == 30 then
+            card.ability.extra.slots = 5
+            G.consumeables:change_size(card.ability.extra.slots)
+            card_eval_status_text(card, 'extra', nil, nil, nil, {message = 'more slots'})
+        elseif math.max(0,math.floor((G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.all or 0)/2)) == 22 then
+            card.ability.extra.slots = 4
+            G.consumeables:change_size(card.ability.extra.slots)
+            card_eval_status_text(card, 'extra', nil, nil, nil, {message = 'more slots'})
+        elseif math.max(0,math.floor((G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.all or 0)/2)) == 15 then
+            card.ability.extra.slots = 3
+            G.consumeables:change_size(card.ability.extra.slots)
+            card_eval_status_text(card, 'extra', nil, nil, nil, {message = 'more slots'})
+        elseif math.max(0,math.floor((G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.all or 0)/2)) == 9 then
+            card.ability.extra.slots = 2
+            G.consumeables:change_size(card.ability.extra.slots)
+            card_eval_status_text(card, 'extra', nil, nil, nil, {message = 'more slots'})
+        elseif math.max(0,math.floor((G.GAME.consumeable_usage_total and G.GAME.consumeable_usage_total.all or 0)/2)) == 4 then
+            card.ability.extra.slots = 1
+            G.consumeables:change_size(card.ability.extra.slots)
+            card_eval_status_text(card, 'extra', nil, nil, nil, {message = 'more slots'})
         end
+        --card.ability.extra.triggered = true
     end
 }
 
@@ -665,14 +701,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_ortalab_art_gallery" },
         { name = "j_ortalab_forklift"}
-    }, cost = 11, result_joker = "j_fuseforce_orta_art_heist"
+    }, cost = 13, result_joker = "j_fuseforce_orta_art_heist"
 }
 
 SMODS.Joker {
     key = "orta_perfidy",
     name = "Perfidy",
     rarity = "fuse_fusion",
-    cost = 18,
+    cost = 20,
 	unlocked = true,
 	discovered = false,
     blueprint_compat = true,
@@ -682,6 +718,7 @@ SMODS.Joker {
     atlas = "fuseforce_orta_jokers",
     pos = {x = 1, y = 2},
     artist_credits = {'itayfeder'},
+    dependencies = {"ortalab"},
     config = {
 		extra = {
             chips = 30,
@@ -746,14 +783,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_ortalab_white_flag" },
         { name = "j_ortalab_purple"}
-    }, cost = 8, result_joker = "j_fuseforce_orta_perfidy"
+    }, cost = 10, result_joker = "j_fuseforce_orta_perfidy"
 }
 
 SMODS.Joker {
     key = "orta_necromancer",
     name = "Lich",
     rarity = "fuse_fusion",
-    cost = 20,
+    cost = 22,
 	unlocked = true,
 	discovered = false,
     blueprint_compat = false,
@@ -763,8 +800,11 @@ SMODS.Joker {
     atlas = "fuseforce_orta_jokers",
     pos = {x = 1, y = 3},
     artist_credits = {'minus'},
+    dependencies = {"ortalab"},
     config = {
 		extra = {
+            slots = 2,
+            multiplier = 3,
             joker1 = "j_ortalab_grave_digger",
             joker2 = "j_ortalab_memorial"
     	}
@@ -772,24 +812,43 @@ SMODS.Joker {
     loc_vars = function(self, info_queue, card)
 	return {
 		vars = {
+            card.ability.extra.slots,
+            card.ability.extra.multiplier,
             localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'},
             localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
 		}
 	}
     end,
     add_to_deck = function(self, card, from_debuff)
-        modify_joker_slot_count(1)
+        G.E_MANAGER:add_event(Event({func = function()
+        modify_joker_slot_count(card.ability.extra.slots)
+            update_blind_amounts()
+            return true
+        end}))
     end,
     remove_from_deck = function(self, card, from_debuff)
-        if not G.GAME.blind.boss then
-            modify_joker_slot_count(-1)
+        if G.GAME.blind.boss then
+            modify_joker_slot_count(-card.ability.extra.slots+1)
+        else
+            modify_joker_slot_count(-card.ability.extra.slots)
         end
+        update_blind_amounts()
     end
 }
+
+local get_blind_amount_ref = get_blind_amount
+function get_blind_amount(ante)
+    local amount = get_blind_amount_ref(ante)
+    local grave_diggers = SMODS.find_card('j_ortalab_grave_digger') or SMODS.find_card('j_fuseforce_orta_necromancer')
+    for _, card in ipairs(grave_diggers) do
+        amount = amount * card.ability.extra.multiplier
+    end
+    return amount
+end
 
 FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_ortalab_grave_digger" },
         { name = "j_ortalab_memorial"}
-    }, cost = 6, result_joker = "j_fuseforce_orta_necromancer"
+    }, cost = 8, result_joker = "j_fuseforce_orta_necromancer"
 }

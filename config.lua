@@ -1,4 +1,4 @@
 return {
     ---Gold Fusions
-    ["Gold"] = true,
+    ["No_gold_fusions"] = true,
 }

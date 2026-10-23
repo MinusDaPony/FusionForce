@@ -17,14 +17,14 @@ Fusion_Force.config_tab = function()
 						n = G.UIT.C,
 						config = { align = "cl", padding = 0.05 },
 						nodes = {
-							create_toggle { col = true, label = "", scale = 1, w = 0, shadow = true, ref_table = FusionForce_Config, ref_value = "Gold" },
+							create_toggle { col = true, label = "", scale = 1, w = 0, shadow = true, ref_table = FusionForce_Config, ref_value = "No_gold_fusions" },
 						}
 					},
 					{
 						n = G.UIT.C,
 						config = { align = "c", padding = 0 },
 						nodes = {
-							{ n = G.UIT.T, config = { text = "Gold-tier Fusions", scale = 0.45, colour = G.C.UI.TEXT_LIGHT } },
+							{ n = G.UIT.T, config = { text = "Disable gold rarity fusions", scale = 0.45, colour = G.C.UI.TEXT_LIGHT } },
 						}
 					},
 				}
@@ -52,11 +52,15 @@ if next(SMODS.find_mod("ortalab")) then
 	SMODS.load_file("FusionVirtues.lua")()
 end
 
+if next(SMODS.find_mod("extracredit")) then
+	SMODS.load_file("FusionExtra.lua")()
+end
+
 if next(SMODS.find_mod("partner")) then
 	SMODS.load_file("FusionPartners.lua")()
 end
 
-if FusionForce_Config.Gold then
+if not FusionForce_Config.No_gold_fusions then
 	SMODS.load_file("FusionForceGold.lua")()
 end
 
@@ -66,6 +70,16 @@ SMODS.Atlas({
     px = 71,
     py = 95
 })
+
+SMODS.Rarity {
+	key = "leg_fusion",
+	default_weight = 0,
+	badge_colour = G.C.DARK_EDITION,
+	pools = { ["Joker"] = false },
+	get_weight = function(self, weight, object_type)
+		return weight
+	end,
+}
 
 local function build_requirement_counts(fusion)
 	local required_counts = {}
@@ -119,7 +133,7 @@ local function get_discounted_fusion(fusion)
 		return fusion
 	end
 
-	local adjusted_fusion = copy_table_deep(fusion)
+local adjusted_fusion = copy_table_deep(fusion)
     if not fusionforce_has_fusion_discount_voucher2() then
 	    adjusted_fusion.cost = math.max(0, math.floor(fusion.cost * 0.75))
 	    return adjusted_fusion
@@ -239,6 +253,8 @@ local function resolve_owned_fusion(card)
 	end
 
 	if #highlighted_matches == 1 then
+    --The fuse button wont show up for three or more two-way fusions using the same cards. I changed to the code below just to get the option to fuse cards when there were more than 1 copy of the same card, but this didn't solve the core problem.
+	--if #G.jokers.highlighted > 1 then
 		return highlighted_matches[1]
 	end
 
@@ -436,9 +452,12 @@ SMODS.Consumable {
         if (G.GAME.selected_back.effect.center.key == "b_fuseforce_minusdeck" or G.GAME.selected_sleeve == "sleeve_fuseforce_minussleeve") and #G.jokers.highlighted == 1 and (
             G.jokers.highlighted[1].config.center.rarity == 5
             or G.jokers.highlighted[1].config.center.rarity == "fuse_fusion"
+            or G.jokers.highlighted[1].config.center.rarity == "fuseforce_leg_fusion"
+            or G.jokers.highlighted[1].config.center.rarity == "tsun_leg_fusion"
+            or G.jokers.highlighted[1].config.center.rarity == "tsun_gold_legendary"
             or G.jokers.highlighted[1].config.center.rarity == "fuseforce_gold_fusion"
             or G.jokers.highlighted[1].config.center.rarity == "tsun_gold_fusion"
-        ) then
+        ) and not (G.jokers.highlighted[1].edition and G.jokers.highlighted[1].edition.key == "e_negative") then
             --if #G.jokers.highlighted ~= 1 or G.jokers.highlighted[1].edition.key == "e_negative" then
             if #G.jokers.highlighted ~= 1 then
 			    return false
@@ -460,9 +479,12 @@ SMODS.Consumable {
         if (G.GAME.selected_back.effect.center.key == "b_fuseforce_minusdeck" or G.GAME.selected_sleeve == "sleeve_fuseforce_minussleeve") and (
             G.jokers.highlighted[1].config.center.rarity == 5
             or G.jokers.highlighted[1].config.center.rarity == "fuse_fusion"
+            or G.jokers.highlighted[1].config.center.rarity == "fuseforce_leg_fusion"
+            or G.jokers.highlighted[1].config.center.rarity == "tsun_leg_fusion"
+            or G.jokers.highlighted[1].config.center.rarity == "tsun_gold_legendary"
             or G.jokers.highlighted[1].config.center.rarity == "fuseforce_gold_fusion"
             or G.jokers.highlighted[1].config.center.rarity == "tsun_gold_fusion"
-        ) then
+        ) and not (G.jokers.highlighted[1].edition and G.jokers.highlighted[1].edition.key == "e_negative") then
             G.E_MANAGER:add_event(Event({
                 trigger = 'after',
                 delay = 0.4,
@@ -527,6 +549,9 @@ SMODS.Voucher {
                 if (
                 rarity == 5
                 or rarity == "fuse_fusion"
+                or rarity == "fuseforce_leg_fusion"
+                or rarity == "tsun_leg_fusion"
+                or rarity == "tsun_gold_legendary"
                 or rarity == "fuseforce_gold_fusion"
                 or rarity == "tsun_gold_fusion"
                 ) then
@@ -543,6 +568,9 @@ SMODS.Voucher {
         and (
         rarity == 5
         or rarity == "fuse_fusion"
+        or rarity == "fuseforce_leg_fusion"
+        or rarity == "tsun_leg_fusion"
+        or rarity == "tsun_gold_legendary"
         or rarity == "fuseforce_gold_fusion"
         or rarity == "tsun_gold_fusion"
         ) then
@@ -580,6 +608,9 @@ SMODS.Voucher {
                 if (
                 rarity == 5
                 or rarity == "fuse_fusion"
+                or rarity == "fuseforce_leg_fusion"
+                or rarity == "tsun_leg_fusion"
+                or rarity == "tsun_gold_legendary"
                 or rarity == "fuseforce_gold_fusion"
                 or rarity == "tsun_gold_fusion"
                 ) then
@@ -596,6 +627,9 @@ SMODS.Voucher {
         and (
         rarity == 5
         or rarity == "fuse_fusion"
+        or rarity == "fuseforce_leg_fusion"
+        or rarity == "tsun_leg_fusion"
+        or rarity == "tsun_gold_legendary"
         or rarity == "fuseforce_gold_fusion"
         or rarity == "tsun_gold_fusion"
         ) then
@@ -684,7 +718,7 @@ SMODS.Joker {
     key = "clairvoyant",
     Name = "Clairvoyant",
     rarity = "fuse_fusion",
-    cost = 18,
+    cost = 20,
 	unlocked = true,
 	discovered = false,
     blueprint_compat = true,
@@ -741,14 +775,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_seance" },
         { name = "j_sixth_sense"}
-    }, cost = 6, result_joker = "j_fuseforce_clairvoyant"
+    }, cost = 8, result_joker = "j_fuseforce_clairvoyant"
 }
 
 SMODS.Joker {
     key = "power_pop",
     name = "Power Pop",
     rarity = "fuse_fusion",
-	cost = 22,
+	cost = 24,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -806,14 +840,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_diet_cola" },
         { name = "j_throwback"}
-    }, cost = 10, result_joker = "j_fuseforce_power_pop"
+    }, cost = 12, result_joker = "j_fuseforce_power_pop"
 }
 
 SMODS.Joker {
     key = "reach_the_stars",
     name = "Reach the Stars",
     rarity = "fuse_fusion",
-    cost = 15,
+    cost = 18,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -860,14 +894,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_shoot_the_moon" },
         { name = "j_raised_fist"}
-    }, cost = 5, result_joker = "j_fuseforce_reach_the_stars"
+    }, cost = 8, result_joker = "j_fuseforce_reach_the_stars"
 }
 
 SMODS.Joker {
     key = "rewards_card",
     name = "Rewards Card",
     rarity = "fuse_fusion",
-    cost = 11,
+    cost = 13,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -881,6 +915,7 @@ SMODS.Joker {
         extra = {
             valup = 1,
             debt = 0,
+            debt2 = 0,
 			joker1 = "j_gift",
 			joker2 = "j_credit_card"
         }
@@ -898,6 +933,11 @@ SMODS.Joker {
         end
     end
     card.ability.extra.debt = sell_cost
+    if card.ability.extra.debt ~= card.ability.extra.debt2 then
+        G.GAME.bankrupt_at = G.GAME.bankrupt_at + card.ability.extra.debt2
+        G.GAME.bankrupt_at = G.GAME.bankrupt_at - card.ability.extra.debt
+        card.ability.extra.debt2 = card.ability.extra.debt
+    end
     return {
         vars = {
             card.ability.extra.valup,
@@ -923,13 +963,12 @@ calculate = function(self, card, context)
             colour = G.C.MONEY
         }
     end
-    G.GAME.bankrupt_at = 0 - card.ability.extra.debt
 end,
     add_to_deck = function(self, card, from_debuff)
-        G.GAME.bankrupt_at = 0 - card.ability.extra.debt
+        G.GAME.bankrupt_at = G.GAME.bankrupt_at - card.ability.extra.debt2
     end,
     remove_from_deck = function(self, card, from_debuff)
-        G.GAME.bankrupt_at = 0
+        G.GAME.bankrupt_at = G.GAME.bankrupt_at + card.ability.extra.debt2
     end
 }
 
@@ -937,14 +976,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_gift" },
         { name = "j_credit_card"}
-    }, cost = 4, result_joker = "j_fuseforce_rewards_card"
+    }, cost = 6, result_joker = "j_fuseforce_rewards_card"
 }
 
 SMODS.Joker {
     key = "masters_degree",
     name = "Master's Degree",
     rarity = "fuse_fusion",
-    cost = 18,
+    cost = 20,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -1025,7 +1064,7 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_certificate" },
         { name = "j_scholar"}
-    }, cost = 8, result_joker = "j_fuseforce_masters_degree"
+    }, cost = 10, result_joker = "j_fuseforce_masters_degree"
 }
 
 local Cardset_price = Card.set_cost
@@ -1045,7 +1084,7 @@ SMODS.Joker {
     key = "soothsayer",
     Name = "Soothsayer",
     rarity = "fuse_fusion",
-    cost = 22,
+    cost = 26,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -1088,7 +1127,7 @@ SMODS.Joker {
             }))
             return nil, true -- This is for Joker retrigger purposes
         end
-        if context.end_of_round and not context.individual and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+        if context.end_of_round and context.main_eval and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
             G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
             G.E_MANAGER:add_event(Event({
                 func = (function()
@@ -1113,7 +1152,7 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_astronomer" },
         { name = "j_cartomancer"}
-    }, cost = 8, result_joker = "j_fuseforce_soothsayer"
+    }, cost = 12, result_joker = "j_fuseforce_soothsayer"
 }
 
 local refisface = Card.is_face
@@ -1127,7 +1166,7 @@ SMODS.Joker {
     key = "prosopagnosia",
     name = "Prosopagnosia",
     rarity = "fuse_fusion",
-    cost = 15,
+    cost = 17,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -1169,14 +1208,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_pareidolia" },
         { name = "j_faceless"}
-    }, cost = 6, result_joker = "j_fuseforce_prosopagnosia"
+    }, cost = 8, result_joker = "j_fuseforce_prosopagnosia"
 }
 
 SMODS.Joker {
     key = "energy_drink",
     name = "Energy Drink",
     rarity = "fuse_fusion",
-    cost = 20,
+    cost = 22,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -1258,16 +1297,16 @@ SMODS.Joker {
 
 FusionJokers.fusions:register_fusion {
     jokers = {
-        { name = "j_runner", carry_stat = "chips" },
-        { name = "j_ice_cream"}
-    }, cost = 10, result_joker = "j_fuseforce_energy_drink"
+        { name = "j_runner", merge_stat = "chips" },
+        { name = "j_ice_cream", merge_stat = "chips" }
+    }, cost = 12, merged_stat = "chips", result_joker = "j_fuseforce_energy_drink"
 }
 
 SMODS.Joker {
     key = "boxer_shorts",
     name = "Boxer Shorts",
     rarity = "fuse_fusion",
-    cost = 16,
+    cost = 20,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -1326,14 +1365,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_trousers", carry_stat = "mult" },
         { name = "j_square", carry_stat = "chips"}
-    }, cost = 6, result_joker = "j_fuseforce_boxer_shorts"
+    }, cost = 10, result_joker = "j_fuseforce_boxer_shorts"
 }
 
 SMODS.Joker {
     key = "over_and_out",
     Name = "Over and Out",
     rarity = "fuse_fusion",
-    cost = 16,
+    cost = 18,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -1395,7 +1434,7 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_walkie_talkie" },
         { name = "j_acrobat" }
-    }, cost = 6, result_joker = "j_fuseforce_over_and_out"
+    }, cost = 8, result_joker = "j_fuseforce_over_and_out"
 }
 
 SMODS.Joker {
@@ -1482,7 +1521,7 @@ SMODS.Joker {
 	key = "bribery_clown",
 	name = "Lucid Dreaming",
 	rarity = "fuse_fusion",
-	cost = 17,
+	cost = 19,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -1551,14 +1590,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_hallucination" },
 		{ name = "j_red_card", carry_stat = "mult" },
-	}, cost = 8, result_joker = "j_fuseforce_bribery_clown"
+	}, cost = 10, result_joker = "j_fuseforce_bribery_clown"
 }
 
 SMODS.Joker {
 	key = "moorstone",
-	name = "Moorstone",
+	name = "Geode Joker",
 	rarity = "fuse_fusion",
-	cost = 22,
+	cost = 24,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -1648,14 +1687,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_marble" },
 		{ name = "j_stone" },
-	}, cost = 10, result_joker = "j_fuseforce_moorstone"
+	}, cost = 12, result_joker = "j_fuseforce_moorstone"
 }
 
 SMODS.Joker {
 	key = "oscar_best_actor",
 	name = "Masquerade",
 	rarity = "fuse_fusion",
-	cost = 18,
+	cost = 21,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -1718,14 +1757,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_sock_and_buskin" },
 		{ name = "j_mime" },
-	}, cost = 7, result_joker = "j_fuseforce_oscar_best_actor"
+	}, cost = 10, result_joker = "j_fuseforce_oscar_best_actor"
 }
 
 SMODS.Joker {
 	key = "optimist",
 	name = "Optimist",
 	rarity = "fuse_fusion",
-	cost = 20,
+	cost = 23,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = false,
@@ -1775,14 +1814,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_troubadour" },
 		{ name = "j_merry_andy" },
-	}, cost = 7, result_joker = "j_fuseforce_optimist"
+	}, cost = 10, result_joker = "j_fuseforce_optimist"
 }
 
 SMODS.Joker {
 	key = "fight_a_bull",
 	name = "Horse",
 	rarity = "fuse_fusion",
-	cost = 22,
+	cost = 23,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -1834,14 +1873,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_bull" },
 		{ name = "j_bootstraps" },
-	}, cost = 9, result_joker = "j_fuseforce_fight_a_bull"
+	}, cost = 10, result_joker = "j_fuseforce_fight_a_bull"
 }
 
 SMODS.Joker {
 	key = "melancholy_phantom",
 	name = "Melancholy Phantom",
 	rarity = "fuse_fusion",
-	cost = 18,
+	cost = 20,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -1862,17 +1901,21 @@ SMODS.Joker {
     config = {
 		extra = {	
 			x_mult = 1,
-			chips = 52,
+			chips = 56,
+			x_mult_mod = 8,
+			chips_mod = 0.25,
 			joker1 = "j_blue_joker",
 			joker2 = "j_hologram"
     	}
 	},
     loc_vars = function(self, info_queue, card)
-	card.ability.extra.chips = 20 +(card.ability.extra.x_mult*32)
+	card.ability.extra.chips = 24 +(card.ability.extra.x_mult*32)
 	return {
 		vars = { 
 			card.ability.extra.x_mult,
 			card.ability.extra.chips,
+			card.ability.extra.x_mult_mod,
+			card.ability.extra.chips_mod,
     		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'}, 
     		localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
 		}
@@ -1889,8 +1932,8 @@ SMODS.Joker {
     		end
 		if context.playing_card_added and not card.getting_sliced then
         		if not context.blueprint and not context.retrigger_joker and context.cards and context.cards[1] then
-                    card.ability.extra.x_mult = card.ability.extra.x_mult + #context.cards*0.25
-                    --card.ability.extra.chips = card.ability.extra.chips + #context.cards*8
+                    card.ability.extra.x_mult = card.ability.extra.x_mult + #context.cards*card.ability.extra.x_mult_mod
+                    --card.ability.extra.chips = card.ability.extra.chips + #context.cards*card.ability.extra.chips_mod
                     --card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'melancholy_phantom', vars = {card.ability.extra.x_mult,card.ability.extra.chips}}})
                     card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('k_upgrade_ex')})
                 end
@@ -1902,14 +1945,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_blue_joker" },
 		{ name = "j_hologram", carry_stat = "x_mult" },
-	}, cost = 6, result_joker = "j_fuseforce_melancholy_phantom"
+	}, cost = 8, result_joker = "j_fuseforce_melancholy_phantom"
 }
 
 SMODS.Joker {
 	key = "solar_flare_joker",
 	name = "Solar Flare Joker",
 	rarity = "fuse_fusion",
-	cost = 23,
+	cost = 25,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -1964,7 +2007,7 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_space" },
 		{ name = "j_burnt" },
-	}, cost = 10, result_joker = "j_fuseforce_solar_flare_joker"
+	}, cost = 12, result_joker = "j_fuseforce_solar_flare_joker"
 }
 
 SMODS.Joker {
@@ -2054,7 +2097,7 @@ SMODS.Joker {
 	key = "serial_killer",
 	name = "Serial Killer",
 	rarity = "fuse_fusion",
-	cost = 17,
+	cost = 19,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -2167,14 +2210,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_ceremonial", carry_stat = "mult" },
 		{ name = "j_madness", carry_stat = "x_mult" },
-	}, cost = 4, result_joker = "j_fuseforce_serial_killer"
+	}, cost = 6, result_joker = "j_fuseforce_serial_killer"
 }
 
 SMODS.Joker {
 	key = "minotaur",
 	name = "Minotaur",
 	rarity = "fuse_fusion",
-	cost = 19,
+	cost = 21,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -2231,14 +2274,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_bull" },
 		{ name = "j_matador" },
-	}, cost = 6, result_joker = "j_fuseforce_minotaur"
+	}, cost = 8, result_joker = "j_fuseforce_minotaur"
 }
 
 SMODS.Joker {
 	key = "time_keeper",
 	name = "Time Keeper",
 	rarity = "fuse_fusion",
-	cost = 20,
+	cost = 21,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -2318,14 +2361,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_blue_joker" },
 		{ name = "j_delayed_grat" },
-	}, cost = 11, result_joker = "j_fuseforce_time_keeper"
+	}, cost = 12, result_joker = "j_fuseforce_time_keeper"
 }
 
 SMODS.Joker {
 	key = "four_inch_gap",
 	name = "Four Inch Gap",
 	rarity = "fuse_fusion",
-	cost = 22,
+	cost = 24,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = false,
@@ -2438,7 +2481,7 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_four_fingers" },
 		{ name = "j_shortcut" },
-	}, cost = 8, result_joker = "j_fuseforce_four_inch_gap"
+	}, cost = 10, result_joker = "j_fuseforce_four_inch_gap"
 }
 
 local function reset_fuseforce_cavepainting_card()
@@ -2460,7 +2503,7 @@ SMODS.Joker {
 	key = "cavepainting",
 	name = "Cave Painting",
 	rarity = "fuse_fusion",
-	cost = 22,
+	cost = 28,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -2473,7 +2516,7 @@ SMODS.Joker {
     config = {
 		extra = {
             x_mult = 1.5,
-            x_mult_flush = 2,
+            x_mult_flush = 1.5,
             type = 'Flush',
 			joker1 = "j_ancient",
 			joker2 = "j_smeared"
@@ -2522,14 +2565,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_ancient" },
 		{ name = "j_smeared" },
-	}, cost = 7, result_joker = "j_fuseforce_cavepainting"
+	}, cost = 12, result_joker = "j_fuseforce_cavepainting"
 }
 
 SMODS.Joker {
 	key = "skipper",
 	name = "Skipper",
 	rarity = "fuse_fusion",
-	cost = 18,
+	cost = 20,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -2551,7 +2594,7 @@ SMODS.Joker {
         local sell_cost = 0
         for _, joker in ipairs(G.jokers and G.jokers.cards or {}) do
             if joker ~= card then
-                sell_cost = sell_cost + joker.sell_cost*0.2
+                sell_cost = sell_cost + joker.sell_cost*0.1
             end
         end
 		return {
@@ -2568,7 +2611,7 @@ SMODS.Joker {
         local sell_cost = 0
         for _, joker in ipairs(G.jokers and G.jokers.cards or {}) do
             if joker ~= card then
-                sell_cost = sell_cost + joker.sell_cost*0.2
+                sell_cost = sell_cost + joker.sell_cost*0.1
             end
         end
             return {
@@ -2599,14 +2642,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_swashbuckler" },
 		{ name = "j_throwback" },
-	}, cost = 8, result_joker = "j_fuseforce_skipper"
+	}, cost = 10, result_joker = "j_fuseforce_skipper"
 }
 
 SMODS.Joker {
 	key = "two_heads",
 	name = "Two Heads",
 	rarity = "fuse_fusion",
-	cost = 26,
+	cost = 30,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -2720,14 +2763,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_blueprint" },
 		{ name = "j_brainstorm" },
-	}, cost = 6, result_joker = "j_fuseforce_two_heads"
+	}, cost = 10, result_joker = "j_fuseforce_two_heads"
 }
 
 SMODS.Joker {
 	key = "ivy",
 	name = "Ivy",
 	rarity = "fuse_fusion",
-	cost = 19,
+	cost = 22,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -2822,14 +2865,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_flower_pot" },
 		{ name = "j_marble" },
-	}, cost = 7, result_joker = "j_fuseforce_ivy"
+	}, cost = 10, result_joker = "j_fuseforce_ivy"
 }
 
 SMODS.Joker {
 	key = "dye_pack",
 	name = "Dye Pack",
 	rarity = "fuse_fusion",
-	cost = 18,
+	cost = 20,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -2893,14 +2936,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_burglar" },
 		{ name = "j_trading" },
-	}, cost = 6, result_joker = "j_fuseforce_dye_pack"
+	}, cost = 8, result_joker = "j_fuseforce_dye_pack"
 }
 
 SMODS.Joker {
 	key = "scratch",
 	name = "Scratch",
 	rarity = "fuse_fusion",
-	cost = 23,
+	cost = 25,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -3007,14 +3050,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_vagabond" },
 		{ name = "j_8_ball" },
-	}, cost = 10, result_joker = "j_fuseforce_scratch"
+	}, cost = 12, result_joker = "j_fuseforce_scratch"
 }
 
 SMODS.Joker {
 	key = "black_hearted",
 	name = "Black Hearted",
 	rarity = "fuse_fusion",
-	cost = 21,
+	cost = 23,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -3093,14 +3136,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_vampire", carry_stat = "x_mult" },
 		{ name = "j_blackboard" },
-	}, cost = 8, result_joker = "j_fuseforce_black_hearted"
+	}, cost = 10, result_joker = "j_fuseforce_black_hearted"
 }
 
 SMODS.Joker {
 	key = "cut_and_pasted",
 	name = "Cut and Pasted Joker",
 	rarity = "fuse_fusion",
-	cost = 19,
+	cost = 22,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -3163,14 +3206,15 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_hanging_chad" },
 		{ name = "j_stencil" },
-	}, cost = 7, result_joker = "j_fuseforce_cut_and_pasted"
+	}, cost = 10, result_joker = "j_fuseforce_cut_and_pasted"
 }
 
+if not next(SMODS.find_mod("extracredit")) then
 SMODS.Joker {
 	key = "alloy",
 	name = "Alloy Joker",
 	rarity = "fuse_fusion",
-	cost = 13,
+	cost = 15,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = false,
@@ -3242,14 +3286,15 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_ticket" },
 		{ name = "j_steel_joker" },
-	}, cost = 6, result_joker = "j_fuseforce_alloy"
+	}, cost = 8, result_joker = "j_fuseforce_alloy"
 }
+end
 
 SMODS.Joker {
 	key = "midas_hand",
 	name = "Midas Hand",
 	rarity = "fuse_fusion",
-	cost = 23,
+	cost = 25,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -3349,14 +3394,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_midas_mask" },
 		{ name = "j_baron" },
-	}, cost = 8, result_joker = "j_fuseforce_midas_hand"
+	}, cost = 10, result_joker = "j_fuseforce_midas_hand"
 }
 
 SMODS.Joker {
 	key = "stew_and_dumplings",
 	name = "Stew and Dumplings",
 	rarity = "fuse_fusion",
-	cost = 18,
+	cost = 24,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -3405,14 +3450,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_ramen", carry_stat = "x_mult" },
 		{ name = "j_mystic_summit" },
-	}, cost = 6, result_joker = "j_fuseforce_stew_and_dumplings"
+	}, cost = 12, result_joker = "j_fuseforce_stew_and_dumplings"
 }
 
 SMODS.Joker {
 	key = "water_bottle",
 	name = "Dry Jokes are Thirsty Work",
 	rarity = "fuse_fusion",
-	cost = 22,
+	cost = 24,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -3499,14 +3544,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_hack", },
 		{ name = "j_selzer" },
-	}, cost = 10, result_joker = "j_fuseforce_water_bottle"
+	}, cost = 12, result_joker = "j_fuseforce_water_bottle"
 }
 
 SMODS.Joker {
     key = "kintsugi",
     name = "Kintsugi",
     rarity = "fuse_fusion",
-    cost = 20,
+    cost = 22,
 	unlocked = true,
 	discovered = false,
     blueprint_compat = true,
@@ -3565,23 +3610,27 @@ SMODS.Joker {
 			--end
 			if suits['Hearts'] and suits['Diamonds'] and suits['Spades'] and suits['Clubs'] then
 				return {
-					xmult = card.ability.extra.xmult * 4 + card.ability.extra.xmult_mod * wild_tally
+					xmult = card.ability.extra.xmult * 4,
+                    x_mult = 1 + card.ability.extra.xmult_mod * wild_tally
 				}
 			elseif (suits['Spades'] and suits['Clubs'] and suits['Hearts'] and not suits['Diamonds']) or (suits['Diamonds'] and suits['Clubs'] and suits['Hearts'] and not suits['Spades']) or (suits['Spades'] and suits['Clubs'] and suits['Diamonds'] and not suits['Hearts']) or (suits['Diamonds'] and suits['Spades'] and suits['Hearts'] and not suits['Clubs']) then
 				return {
-					xmult = card.ability.extra.xmult * 3 + card.ability.extra.xmult_mod * wild_tally
+					xmult = card.ability.extra.xmult * 3,
+                    x_mult = 1 + card.ability.extra.xmult_mod * wild_tally
 				}
 			elseif (suits['Hearts'] and suits['Diamonds'] and not suits['Spades'] and not suits['Clubs']) or (suits['Spades'] and suits['Clubs'] and not suits['Hearts'] and not suits['Diamonds']) or (suits['Hearts'] and suits['Spades'] and not suits['Clubs'] and not suits['Diamonds']) or (suits['Spades'] and suits['Diamonds'] and not suits['Hearts'] and not suits['Clubs']) or (suits['Hearts'] and suits['Clubs'] and not suits['Spades'] and not suits['Diamonds']) or (suits['Clubs'] and suits['Diamonds'] and not suits['Hearts'] and not suits['Spades']) then
 				return {
-					xmult = card.ability.extra.xmult * 2 + card.ability.extra.xmult_mod * wild_tally
+					xmult = card.ability.extra.xmult * 2,
+                    x_mult = 1 + card.ability.extra.xmult_mod * wild_tally
 				}
 			elseif (suits['Hearts'] and not suits['Clubs'] and not suits['Spades'] and not suits['Diamonds']) or (suits['Diamonds'] and not suits['Clubs'] and not suits['Hearts'] and not suits['Spades']) or (suits['Spades'] and not suits['Clubs'] and not suits['Diamonds'] and not suits['Hearts']) or (suits['Clubs'] and not suits['Spades'] and not suits['Hearts'] and not suits['Diamonds']) then
 				return {
-					xmult = card.ability.extra.xmult + card.ability.extra.xmult_mod * wild_tally
+					xmult = card.ability.extra.xmult,
+                    x_mult = 1 + card.ability.extra.xmult_mod * wild_tally
 				}
 			else
                 return {
-                    xmult = 1 + card.ability.extra.xmult_mod * wild_tally
+                    x_mult = 1 + card.ability.extra.xmult_mod * wild_tally
                 }
             end
 		end
@@ -3592,14 +3641,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_flower_pot" },
         { name = "j_seeing_double"}
-    }, cost = 8, result_joker = "j_fuseforce_kintsugi"
+    }, cost = 10, result_joker = "j_fuseforce_kintsugi"
 }
 
 SMODS.Joker {
     key = "greener_joker",
     name = "Greener Joker",
     rarity = "fuse_fusion",
-    cost = 20,
+    cost = 22,
 	unlocked = true,
 	discovered = false,
     blueprint_compat = true,
@@ -3714,14 +3763,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_flower_pot" },
         { name = "j_green_joker", carry_stat = "mult"}
-    }, cost = 8, result_joker = "j_fuseforce_greener_joker"
+    }, cost = 10, result_joker = "j_fuseforce_greener_joker"
 }
 
 SMODS.Joker {
 	key = "paranormal",
 	name = "Paranormal Joker",
 	rarity = "fuse_fusion",
-	cost = 20,
+	cost = 22,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -3734,7 +3783,7 @@ SMODS.Joker {
     config = {
 		extra = {
 			mult_mod = 2,
-			xmult_mod = 0.4,
+			xmult_mod = 0.2,
 			joker1 = "j_fortune_teller",
 			joker2 = "j_sixth_sense"
     	}
@@ -3752,7 +3801,7 @@ SMODS.Joker {
 	}
     end,
 	calculate = function(self, card, context)
-        if context.using_consumeable and not context.blueprint then
+        if context.using_consumeable and not context.blueprint and not context.retrigger_joker then
             if context.consumeable.ability.set == "Tarot" then
                 return {
                     message = localize { type = 'variable', key = 'a_mult', vars = { G.GAME.consumeable_usage_total.tarot * card.ability.extra.mult_mod } },
@@ -3776,14 +3825,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_fortune_teller", },
 		{ name = "j_sixth_sense" },
-	}, cost = 8, result_joker = "j_fuseforce_paranormal"
+	}, cost = 10, result_joker = "j_fuseforce_paranormal"
 }
 
 SMODS.Joker {
 	key = "black_soul",
 	name = "Black Soul",
 	rarity = "fuse_fusion",
-	cost = 18,
+	cost = 20,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -3899,7 +3948,7 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_superposition", },
 		{ name = "j_seance" },
-	}, cost = 9, result_joker = "j_fuseforce_black_soul"
+	}, cost = 11, result_joker = "j_fuseforce_black_soul"
 }
 --Minus here, I entirely stole Maratby's code. Comment text after this line is also stolen from Maratby.
 ---List of Cryptid Stake Keys, allows the sticker_inquisition function to default to Gold if Splash's Stake Sticker is any Cryptid Stake
@@ -4043,7 +4092,7 @@ SMODS.Joker {
 	key = "bargaining_chips",
 	name = "Bargaining Chips",
 	rarity = "fuse_fusion",
-	cost = 16,
+	cost = 18,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = false,
@@ -4137,14 +4186,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_mr_bones", },
 		{ name = "j_loyalty_card" },
-	}, cost = 6, result_joker = "j_fuseforce_bargaining_chips"
+	}, cost = 8, result_joker = "j_fuseforce_bargaining_chips"
 }
 
 SMODS.Joker {
 	key = "giant_beanstalk",
 	name = "Giant Beanstalk",
 	rarity = "fuse_fusion",
-	cost = 22,
+	cost = 24,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -4221,14 +4270,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_turtle_bean", },
 		{ name = "j_hit_the_road" },
-	}, cost = 8, result_joker = "j_fuseforce_giant_beanstalk"
+	}, cost = 10, result_joker = "j_fuseforce_giant_beanstalk"
 }
 
 SMODS.Joker {
 	key = "smurf",
 	name = "Smurf Joker",
 	rarity = "fuse_fusion",
-	cost = 22,
+	cost = 24,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -4296,14 +4345,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_wee", carry_stat = "chips" },
 		{ name = "j_blue_joker" },
-	}, cost = 9, result_joker = "j_fuseforce_smurf"
+	}, cost = 11, result_joker = "j_fuseforce_smurf"
 }
 
 SMODS.Joker {
 	key = "fused",
 	name = "Amalgamult",
 	rarity = "fuse_fusion",
-	cost = 14,
+	cost = 16,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -4362,14 +4411,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_joker" },
 		{ name = "j_misprint" },
-	}, cost = 8, result_joker = "j_fuseforce_fused"
+	}, cost = 10, result_joker = "j_fuseforce_fused"
 }
 
 SMODS.Joker {
 	key = "card_collection",
 	name = "Card Collection",
 	rarity = "fuse_fusion",
-	cost = 22,
+	cost = 24,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -4450,14 +4499,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_riff_raff" },
 		{ name = "j_baseball" },
-	}, cost = 8, result_joker = "j_fuseforce_card_collection"
+	}, cost = 10, result_joker = "j_fuseforce_card_collection"
 }
 
 SMODS.Joker {
 	key = "chancer",
 	name = "Chancer",
 	rarity = "fuse_fusion",
-	cost = 20,
+	cost = 22,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = false,
@@ -4525,14 +4574,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_cloud_9" },
 		{ name = "j_oops" },
-	}, cost = 9, result_joker = "j_fuseforce_chancer"
+	}, cost = 11, result_joker = "j_fuseforce_chancer"
 }
 
 SMODS.Joker {
 	key = "sticker",
 	name = "Sticker Joker",
 	rarity = "fuse_fusion",
-	cost = 22,
+	cost = 24,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -4571,14 +4620,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_pareidolia" },
 		{ name = "j_photograph" },
-	}, cost = 12, result_joker = "j_fuseforce_sticker"
+	}, cost = 14, result_joker = "j_fuseforce_sticker"
 }
 
 SMODS.Joker {
 	key = "golden_calf",
 	name = "Golden Calf",
 	rarity = "fuse_fusion",
-	cost = 21,
+	cost = 23,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -4634,14 +4683,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_golden" },
 		{ name = "j_campfire", carry_stat = "x_mult" },
-	}, cost = 6, result_joker = "j_fuseforce_golden_calf"
+	}, cost = 8, result_joker = "j_fuseforce_golden_calf"
 }
 
 SMODS.Joker {
 	key = "shadowman",
 	name = "Shadowman",
 	rarity = "fuse_fusion",
-	cost = 20,
+	cost = 22,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = false,
@@ -4700,12 +4749,16 @@ SMODS.Joker {
                     (owned and owned.config and owned.config.center and not string.find(owned.config.center.key, "j_tsun_", 1, true) and
                     (owned.config.center.config.rarity == 5
                     or owned.config.center.rarity == "fuse_fusion"
+                    or owned.config.center.rarity == "fuseforce_leg_fusion"
+                    or owned.config.center.rarity == "tsun_leg_fusion"
+                    or owned.config.center.rarity == "tsun_gold_legendary"
                     or owned.config.center.rarity == "fuseforce_gold_fusion"
                     or owned.config.center.rarity == "tsun_gold_fusion")
                     and (
                     shop_card.config.center.key == owned.ability.extra.joker1
                     or shop_card.config.center.key == owned.ability.extra.joker2
-                    or shop_card.config.center.key == owned.ability.extra.joker3)) then
+                    or shop_card.config.center.key == owned.ability.extra.joker3
+                    or shop_card.config.center.key == owned.ability.extra.joker4)) then
                         shop_card:set_edition("e_negative", true)
                         shop_card.ability.couponed = true
                         shop_card:set_cost()
@@ -4755,14 +4808,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_ring_master" },
 		{ name = "j_invisible" },
-	}, cost = 7, result_joker = "j_fuseforce_shadowman"
+	}, cost = 9, result_joker = "j_fuseforce_shadowman"
 }
 
 SMODS.Joker {
 	key = "gargoyle",
 	name = "Gargoyle",
 	rarity = "fuse_fusion",
-	cost = 20,
+	cost = 22,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -4819,14 +4872,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_idol" },
 		{ name = "j_stone" },
-	}, cost = 8, result_joker = "j_fuseforce_gargoyle"
+	}, cost = 10, result_joker = "j_fuseforce_gargoyle"
 }
 
 SMODS.Joker {
 	key = "ratio_road",
 	name = "Ratio Road",
 	rarity = "fuse_fusion",
-	cost = 25,
+	cost = 27,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -4948,14 +5001,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_drivers_license" },
 		{ name = "j_fibonacci" },
-	}, cost = 10, result_joker = "j_fuseforce_ratio_road"
+	}, cost = 12, result_joker = "j_fuseforce_ratio_road"
 }
 
 SMODS.Joker {
 	key = "ransom",
 	name = "Ransom Note",
 	rarity = "fuse_fusion",
-	cost = 20,
+	cost = 22,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -4969,7 +5022,7 @@ SMODS.Joker {
 		extra = {	
 			dollars = 5,
 			poker_hand = 'High Card',
-			id = '14',
+			id = 14,
 			rank = 'Ace',
 			joker1 = "j_mail",
 			joker2 = "j_todo_list"
@@ -5067,14 +5120,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_mail" },
 		{ name = "j_todo_list" },
-	}, cost = 12, result_joker = "j_fuseforce_ransom"
+	}, cost = 14, result_joker = "j_fuseforce_ransom"
 }
 
 SMODS.Joker {
 	key = "unlucky_cat",
 	name = "Unlucky Cat",
 	rarity = "fuse_fusion",
-	cost = 22,
+	cost = 24,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -5181,14 +5234,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_glass", merge_stat = "x_mult" },
 		{ name = "j_lucky_cat", merge_stat = "x_mult" },
-	}, cost = 10, merged_stat = "x_mult", result_joker = "j_fuseforce_unlucky_cat"
+	}, cost = 12, merged_stat = "x_mult", result_joker = "j_fuseforce_unlucky_cat"
 }
 
 SMODS.Joker {
 	key = "sand",
 	name = "Sand Joker",
 	rarity = "fuse_fusion",
-	cost = 20,
+	cost = 22,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -5273,14 +5326,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_glass", carry_stat = "x_mult" },
 		{ name = "j_erosion" },
-	}, cost = 8, result_joker = "j_fuseforce_sand"
+	}, cost = 10, result_joker = "j_fuseforce_sand"
 }
 
 SMODS.Joker {
 	key = "millstone",
 	name = "Millstone",
 	rarity = "fuse_fusion",
-	cost = 22,
+	cost = 24,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -5343,14 +5396,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_card_sharp" },
 		{ name = "j_erosion" },
-	}, cost = 10, result_joker = "j_fuseforce_millstone"
+	}, cost = 12, result_joker = "j_fuseforce_millstone"
 }
 
 SMODS.Joker {
 	key = "assassin",
 	name = "Assassin",
 	rarity = "fuse_fusion",
-	cost = 20,
+	cost = 22,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -5478,14 +5531,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_faceless" },
 		{ name = "j_castle", carry_stat = "chips" },
-	}, cost = 10, result_joker = "j_fuseforce_assassin"
+	}, cost = 12, result_joker = "j_fuseforce_assassin"
 }
 
 SMODS.Joker {
 	key = "hybrid",
 	name = "Hybrid Fusion",
 	rarity = "fuse_fusion",
-	cost = 23,
+	cost = 25,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -5615,14 +5668,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_half" },
 		{ name = "j_dna" },
-	}, cost = 10, result_joker = "j_fuseforce_hybrid"
+	}, cost = 12, result_joker = "j_fuseforce_hybrid"
 }
 
 SMODS.Joker {
 	key = "fortified",
 	name = "Fortified Joker",
 	rarity = "fuse_fusion",
-	cost = 24,
+	cost = 26,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -5710,14 +5763,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_stone" },
 		{ name = "j_steel_joker" },
-	}, cost = 11, result_joker = "j_fuseforce_fortified"
+	}, cost = 13, result_joker = "j_fuseforce_fortified"
 }
 
 SMODS.Joker {
     key = "easter_egg",
     name = "Easter Egg",
     rarity = "fuse_fusion",
-    cost = 20,
+    cost = 22,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = false,
@@ -5763,7 +5816,7 @@ calculate = function(self, card, context)
             colour = G.C.MONEY
         }
     end
-    if context.card_added and context.card.ability.set == 'Tarot' and not context.blueprint and not context.retrigger_joker then
+    if (context.card_added or context.modify_booster_card) and context.card.ability.set == 'Tarot' and not context.blueprint and not context.retrigger_joker then
     --if ((context.modify_shop_card or context.modify_booster_card) or (context.card_added and not context.buying_card)) and not context.blueprint and not context.retrigger_joker then
         local tarot_card = context.card
         if tarot_card.ability.set == 'Tarot' and tarot_card.config.center.key == "c_hermit" then
@@ -5795,14 +5848,14 @@ FusionJokers.fusions:register_fusion {
     jokers = {
         { name = "j_gift", merge_stat = "extra_value" },
         { name = "j_egg", merge_stat = "extra_value" }
-    }, cost = 10, merged_stat = "extra_value", result_joker = "j_fuseforce_easter_egg"
+    }, cost = 12, merged_stat = "extra_value", result_joker = "j_fuseforce_easter_egg"
 }
 
 SMODS.Joker {
 	key = "missing_poster",
 	name = "Missing Poster",
 	rarity = "fuse_fusion",
-	cost = 24,
+	cost = 26,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -5899,14 +5952,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_stencil" },
 		{ name = "j_madness", carry_stat = "x_mult" },
-	}, cost = 9, result_joker = "j_fuseforce_missing_poster"
+	}, cost = 11, result_joker = "j_fuseforce_missing_poster"
 }
 
 SMODS.Joker {
 	key = "extortion",
 	name = "Extortion",
 	rarity = "fuse_fusion",
-	cost = 18,
+	cost = 20,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -5987,14 +6040,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_ceremonial", carry_stat = "mult" },
 		{ name = "j_to_the_moon" },
-	}, cost = 7, result_joker = "j_fuseforce_extortion"
+	}, cost = 9, result_joker = "j_fuseforce_extortion"
 }
 
 SMODS.Joker {
 	key = "taurus",
 	name = "Taurus",
 	rarity = "fuse_fusion",
-	cost = 20,
+	cost = 22,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -6080,14 +6133,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_rocket", carry_stat = "dollars" },
 		{ name = "j_matador" },
-	}, cost = 7, result_joker = "j_fuseforce_taurus"
+	}, cost = 9, result_joker = "j_fuseforce_taurus"
 }
 
 SMODS.Joker {
 	key = "torus",
 	name = "Torus",
 	rarity = "fuse_fusion",
-	cost = 22,
+	cost = 24,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -6162,14 +6215,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_constellation" },
 		{ name = "j_satellite" },
-	}, cost = 10, result_joker = "j_fuseforce_torus"
+	}, cost = 12, result_joker = "j_fuseforce_torus"
 }
 
 SMODS.Joker {
 	key = "full_of_stars",
 	name = "Full of Stars",
 	rarity = "fuse_fusion",
-	cost = 22,
+	cost = 24,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -6236,14 +6289,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_constellation", merge_stat = "x_mult" },
 		{ name = "j_obelisk", merge_stat = "x_mult" },
-	}, cost = 8, merged_stat = "x_mult", result_joker = "j_fuseforce_full_of_stars"
+	}, cost = 10, merged_stat = "x_mult", result_joker = "j_fuseforce_full_of_stars"
 }
 
 SMODS.Joker {
 	key = "circus",
 	name = "Circus Tickets",
 	rarity = "fuse_fusion",
-	cost = 16,
+	cost = 18,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = false,
@@ -6343,14 +6396,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_ring_master" },
 		{ name = "j_chaos" },
-	}, cost = 7, result_joker = "j_fuseforce_circus"
+	}, cost = 9, result_joker = "j_fuseforce_circus"
 }
 
 SMODS.Joker {
 	key = "comeback",
 	name = "Comeback",
 	rarity = "fuse_fusion",
-	cost = 20,
+	cost = 22,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -6411,14 +6464,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_stuntman" },
 		{ name = "j_merry_andy" },
-	}, cost = 6, result_joker = "j_fuseforce_comeback"
+	}, cost = 8, result_joker = "j_fuseforce_comeback"
 }
 
 SMODS.Joker {
 	key = "colour_guard",
 	name = "Colour Guard",
 	rarity = "fuse_fusion",
-	cost = 16,
+	cost = 18,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -6476,14 +6529,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_banner" },
 		{ name = "j_juggler" },
-	}, cost = 7, result_joker = "j_fuseforce_colour_guard"
+	}, cost = 9, result_joker = "j_fuseforce_colour_guard"
 }
 
 SMODS.Joker {
 	key = "aristocrats",
 	name = "The Aristocrats",
 	rarity = "fuse_fusion",
-	cost = 23,
+	cost = 25,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -6542,14 +6595,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_baron" },
 		{ name = "j_shoot_the_moon" },
-	}, cost = 10, result_joker = "j_fuseforce_aristocrats"
+	}, cost = 12, result_joker = "j_fuseforce_aristocrats"
 }
 
 SMODS.Joker {
 	key = "cactus_juice",
 	name = "Cactus Juice",
 	rarity = "fuse_fusion",
-	cost = 0, --23
+	cost = 0, --25
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -6574,7 +6627,7 @@ SMODS.Joker {
 	}
     end,
 	calculate = function(self, card, context)
-        if context.selling_self then
+        if context.selling_self and not context.retrigger_joker then
             G.E_MANAGER:add_event(Event({
                 func = (function()
                     add_tag(Tag('tag_double'))
@@ -6613,14 +6666,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_luchador" },
 		{ name = "j_diet_cola" },
-	}, cost = 12, result_joker = "j_fuseforce_cactus_juice"
+	}, cost = 14, result_joker = "j_fuseforce_cactus_juice"
 }
 
 SMODS.Joker {
 	key = "golden_bantam",
 	name = "Golden Bantam",
 	rarity = "fuse_fusion",
-	cost = 20,
+	cost = 22,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -6628,7 +6681,7 @@ SMODS.Joker {
 	perishable_compat = true,
 	attributes = {"mult", "food", "chance", "scaling"},
 	atlas = "fuseforce_jokers",
-	pos = { x = 9, y = 10 },
+	pos = { x = 8, y = 10 },
     artist_credits = {'minus'},
     config = {
 		extra = {
@@ -6683,14 +6736,88 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_gros_michel" },
 		{ name = "j_popcorn" },
-	}, cost = 10, result_joker = "j_fuseforce_golden_bantam"
+	}, cost = 12, result_joker = "j_fuseforce_golden_bantam"
+}
+
+SMODS.Joker {
+	key = "banana_bunch",
+	name = "Banana Bunch",
+	rarity = "fuse_fusion",
+	cost = 18,
+	unlocked = true,
+	discovered = false,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	attributes = {"xmult", "food", "chance", "hands"},
+	atlas = "fuseforce_jokers",
+	pos = { x = 0, y = 11 },
+    artist_credits = {'minus'},
+    config = {
+		extra = {
+			xmult = 6,
+			hands = 0,
+            odds = 6,
+			joker1 = "j_gros_michel",
+			joker2 = "j_loyalty_card"
+    	}
+	},
+    loc_vars = function(self, info_queue, card)
+    local numerator, denominator = SMODS.get_probability_vars(card, 1 + card.ability.extra.hands, card.ability.extra.odds, 'banana_bunch')
+	return {
+		vars = {
+			card.ability.extra.xmult,
+			numerator,
+            denominator,
+            denominator * 10,
+    		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'},
+    		localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
+		}
+	}
+    end,
+    add_to_deck = function(self, card, from_debuff)
+        G.GAME.pool_flags.gros_michel_extinct = true
+    end,
+	calculate = function(self, card, context)
+        if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint and not context.retrigger_joker then
+            if SMODS.pseudorandom_probability(card, 'banana_bunch', 1 + card.ability.extra.hands, card.ability.extra.odds * 10) then
+                SMODS.destroy_cards(card, nil, nil, true)
+                return {
+                    message = localize('k_eaten_ex'),
+                    colour = G.C.RED
+                }
+            else
+                card.ability.extra.hands = 0
+                return {
+                    message = localize('k_safe_ex')
+                }
+            end
+        end
+        if context.joker_main then
+            if not context.blueprint and not context.retrigger_joker then
+                card.ability.extra.hands = card.ability.extra.hands + 1
+            end
+            if SMODS.pseudorandom_probability(card, 'banana_bunch', 1 + card.ability.extra.hands, card.ability.extra.odds) then
+                return {
+                    xmult = card.ability.extra.xmult
+                }
+            end
+        end
+    end
+}
+
+FusionJokers.fusions:register_fusion {
+	jokers = {
+		{ name = "j_gros_michel" },
+		{ name = "j_loyalty_card" },
+	}, cost = 8, result_joker = "j_fuseforce_banana_bunch"
 }
 
 SMODS.Joker {
 	key = "half_half",
 	name = "Half & Half Joker",
 	rarity = "fuse_fusion",
-	cost = 16,
+	cost = 18,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -6698,7 +6825,7 @@ SMODS.Joker {
 	perishable_compat = true,
 	attributes = {"mult"},
 	atlas = "fuseforce_jokers",
-	pos = { x = 1, y = 11 },
+	pos = { x = 9, y = 10 },
     artist_credits = {'minus'},
     config = {
 		extra = {
@@ -6727,14 +6854,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_half" },
 		{ name = "j_half" },
-	}, cost = 8, result_joker = "j_fuseforce_half_half"
+	}, cost = 10, result_joker = "j_fuseforce_half_half"
 }
 
 SMODS.Joker {
 	key = "molotov_cocktail",
 	name = "Molotov Cocktail",
 	rarity = "fuse_fusion",
-	cost = 18,
+	cost = 20,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -6742,7 +6869,7 @@ SMODS.Joker {
 	perishable_compat = true,
 	attributes = {"hand_type", "discard", "food"},
 	atlas = "fuseforce_jokers",
-	pos = { x = 2, y = 11 },
+	pos = { x = 7, y = 10 },
     artist_credits = {'minus'},
     config = {
 		extra = {	
@@ -6758,7 +6885,7 @@ SMODS.Joker {
 		vars = {
 			card.ability.extra.count,
             card.ability.extra.discards,
-            localize{type = 'variable', key = (card.ability.extra.active == 0 and 'fuseforce_inactive' or 'fuseforce_active') },
+            localize{type = 'variable', key = (card.ability.extra.active == 0 and 'molotov_inactive' or 'molotov_active') },
     		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'}, 
     		localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
 		}
@@ -6802,7 +6929,441 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_drunkard" },
 		{ name = "j_burnt" },
-	}, cost = 6, result_joker = "j_fuseforce_molotov_cocktail"
+	}, cost = 8, result_joker = "j_fuseforce_molotov_cocktail"
+}
+
+SMODS.Joker {
+    key = "peak_performance",
+    Name = "Peak Performance",
+    rarity = "fuse_fusion",
+    cost = 21,
+	unlocked = true,
+	discovered = false,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	attributes = {"xmult", "xchips", "discard", "hands"},
+    atlas = "fuseforce_jokers",
+    pos = {x = 0, y = 4},
+    artist_credits = {'minus'},
+    config = {
+        extra = {
+            xchips = 2,
+            xmult = 3,
+            d_remaining = 0,
+			joker1 = "j_mystic_summit",
+			joker2 = "j_acrobat"
+        }
+    },
+    loc_vars = function(self,info_queue,card)
+    return {
+        vars = {
+            card.ability.extra.xchips,
+            card.ability.extra.xmult,
+            card.ability.extra.d_remaining,
+    		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'}, 
+    		localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
+        }
+    }
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main and G.GAME.current_round.discards_left == card.ability.extra.d_remaining and G.GAME.current_round.hands_left == 0 then
+            return {
+                xchips = card.ability.extra.xchips,
+                x_mult = card.ability.extra.xmult
+            }
+        end
+    end
+}
+
+FusionJokers.fusions:register_fusion {
+    jokers = {
+        { name = "j_mystic_summit" },
+        { name = "j_acrobat" }
+    }, cost = 10, result_joker = "j_fuseforce_peak_performance"
+}
+
+SMODS.Joker {
+    key = "hitchhiker",
+    Name = "Hitchhiker",
+    rarity = "fuse_fusion",
+    cost = 19,
+	unlocked = true,
+	discovered = false,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	attributes = {"mult", "chips", "modify_card", "perma_bonus", "face", "reset", "scaling" },
+    atlas = "fuseforce_jokers",
+    pos = {x = 1, y = 4},
+    artist_credits = {'minus'},
+    config = {
+        extra = {
+            chips = 5,
+            mult = 0,
+            mult_mod = 1,
+			joker1 = "j_hiker",
+			joker2 = "j_ride_the_bus"
+        }
+    },
+    loc_vars = function(self,info_queue,card)
+    return {
+        vars = {
+            card.ability.extra.chips,
+            card.ability.extra.mult,
+            card.ability.extra.mult_mod,
+    		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'}, 
+    		localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
+        }
+    }
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play then
+            context.other_card.ability.perma_bonus = (context.other_card.ability.perma_bonus or 0) + card.ability.extra.chips
+            return {
+                message = localize('k_upgrade_ex'),
+                colour = G.C.CHIPS
+            }
+        end
+        if context.before and not context.blueprint and not context.retrigger_joker then
+            local faces = false
+            local face_card = nil
+            for _, playing_card in ipairs(context.scoring_hand) do
+                if playing_card:is_face() then
+                    faces = true
+                    face_card = playing_card
+                    break
+                end
+            end
+            if faces then
+                local last_mult = card.ability.extra.mult
+                card.ability.extra.mult = 0
+                face_card.ability.perma_mult = (face_card.ability.perma_mult or 0) + last_mult
+                if last_mult > 0 then
+                    return {
+                        --message = localize('k_reset')
+                        card = face_card,
+                        message = localize('k_upgrade_ex'),
+                        colour = G.C.MULT
+                    }
+                end
+            else
+                card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_mod
+            end
+        end
+        if context.joker_main then
+            return {
+                mult = card.ability.extra.mult
+            }
+        end
+    end
+}
+
+FusionJokers.fusions:register_fusion {
+    jokers = {
+        { name = "j_hiker" },
+        { name = "j_ride_the_bus" }
+    }, cost = 8, result_joker = "j_fuseforce_hitchhiker"
+}
+
+SMODS.Joker {
+	key = "miner",
+	name = "Gold Miner",
+	rarity = "fuse_fusion",
+	cost = 21,
+	unlocked = true,
+	discovered = false,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	attributes = {"economy", "chips", "modify_card", "enhancements", "playing_card", "generation"},
+	atlas = "fuseforce_jokers",
+	pos = { x = 5, y = 11 },
+    artist_credits = {'minus'},
+    config = {
+		extra = {
+            dollars = 4,
+            chips = 50,
+			joker1 = "j_ticket",
+			joker2 = "j_marble"
+    	}
+	},
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_wild
+		return {
+		vars = {
+			card.ability.extra.dollars,
+			card.ability.extra.chips,
+    		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'}, 
+    		localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
+		}
+	}
+    end,
+	calculate = function(self, card, context)
+          if context.setting_blind then
+            local stone_card = SMODS.create_card { set = "Base", enhancement = "m_stone", area = G.discard }
+            G.playing_card = (G.playing_card and G.playing_card + 1) or 1
+            stone_card.playing_card = G.playing_card
+            table.insert(G.playing_cards, stone_card)
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    stone_card:start_materialize({ G.C.SECONDARY_SET.Enhanced })
+                    G.play:emplace(stone_card)
+                    return true
+                end
+            }))
+            return {
+                message = localize('k_plus_stone'),
+                colour = G.C.SECONDARY_SET.Enhanced,
+                func = function() -- This is for timing purposes, everything here runs after the message
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            G.deck.config.card_limit = G.deck.config.card_limit + 1
+                            return true
+                        end
+                    }))
+                    draw_card(G.play, G.deck, 90, 'up')
+                    SMODS.calculate_context({ playing_card_added = true, cards = { stone_card } })
+                end
+            }
+        end
+
+        if context.before and not context.blueprint and not context.retrigger_joker then
+            local stones = 0
+            local has_edition = card.edition
+            for _, scored_card in ipairs(context.scoring_hand) do
+                if next(SMODS.get_enhancements(scored_card)) then
+                    if SMODS.has_enhancement(scored_card, 'm_stone') then
+                        stones = stones + 1
+                        scored_card:set_ability('m_gold', nil, true)
+                        G.E_MANAGER:add_event(Event({
+                            func = function()
+                                scored_card:juice_up()
+                                return true
+                            end
+                        }))
+                    end
+                end
+        end
+                if stones > 0 then
+                    return {
+                        message = 'Struck Gold!'
+                    }
+                end
+            end
+        if context.individual and context.cardarea == G.play and SMODS.has_enhancement(context.other_card, 'm_gold') then
+            G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + card.ability.extra.dollars
+            return {
+                chips = card.ability.extra.chips,
+                dollars = card.ability.extra.dollars,
+                func = function() -- This is for timing purposes, it runs after the dollar manipulation
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            G.GAME.dollar_buffer = 0
+                            return true
+                        end
+                    }))
+                end
+            }
+        end
+    end
+}
+
+FusionJokers.fusions:register_fusion {
+	jokers = {
+		{ name = "j_ticket" },
+		{ name = "j_marble" },
+	}, cost = 10, result_joker = "j_fuseforce_miner"
+}
+
+SMODS.Joker {
+	key = "theatre",
+	name = "Theatre",
+	rarity = "fuse_fusion",
+	cost = 20,
+	unlocked = true,
+	discovered = false,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	attributes = {"face", "ace", "two", "three", "four", "five", "rank", "retrigger"},
+	atlas = "fuseforce_jokers",
+	pos = { x = 6, y = 3 },
+    artist_credits = {'numbuh214'},
+    config = {
+		extra = {
+			repetitions = 1,
+			joker1 = "j_hack",
+			joker2 = "j_sock_and_buskin"
+    	}
+	},
+    loc_vars = function(self, info_queue, card)
+	return {
+		vars = {
+			card.ability.extra.repetitions,
+    		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'}, 
+    		localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
+		}
+	}
+    end,
+	calculate = function(self, card, context)
+        if context.repetition and context.cardarea == G.play then
+            if context.other_card:get_id() == 14 or
+            context.other_card:get_id() == 2 or
+            context.other_card:get_id() == 3 or
+            context.other_card:get_id() == 4 or
+            context.other_card:get_id() == 5 then
+                if context.other_card:is_face() then
+                    return {
+                        repetitions = card.ability.extra.repetitions * 2
+                    }
+                else
+                    return {
+                        repetitions = card.ability.extra.repetitions
+                    }
+                end
+            elseif context.other_card:is_face() then
+                return {
+                    repetitions = card.ability.extra.repetitions
+                }
+            end
+        end
+    end
+}
+
+FusionJokers.fusions:register_fusion {
+	jokers = {
+		{ name = "j_hack", },
+		{ name = "j_sock_and_buskin" },
+	}, cost = 8, result_joker = "j_fuseforce_theatre"
+}
+
+SMODS.Atlas {
+    key = 'you_dont_know',
+    path = "j_you_dont_know.png",
+    px = 71,
+    py = 95
+}
+
+SMODS.Joker {
+	key = "ydkj",
+	name = "You Don't Know Joker",
+	rarity = "fuse_fusion",
+	cost = 24,
+	unlocked = true,
+	discovered = false,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	attributes = {"xmult", "jack", "discard", "reset", "rank", "economy", "scaling"},
+	atlas = "you_dont_know",
+	pos = { x = 0, y = 0 },
+    artist_credits = {'itayfeder'},
+    config = {
+		extra = {
+			xmult = 1,
+            xmult_mod = 0.5,
+			dollars = 5,
+			id = 14,
+			rank = 'Ace',
+			id2 = 11,
+			rank2 = 'Jack',
+			joker1 = "j_mail",
+			joker2 = "j_hit_the_road"
+    	}
+	},
+    loc_vars = function(self, info_queue, card)
+	return {
+		vars = {
+			card.ability.extra.xmult,
+            card.ability.extra.xmult_mod,
+			card.ability.extra.dollars,
+            localize(card.ability.extra.rank, 'ranks'),
+            localize(card.ability.extra.rank2, 'ranks'),
+    		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'},
+    		localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
+		}
+	}
+    end,
+	calculate = function(self, card, context)
+        if context.discard and not context.other_card.debuff and (context.other_card:get_id() == card.ability.extra.id or context.other_card:get_id() == card.ability.extra.id2) then
+            G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + card.ability.extra.dollars
+            if not context.blueprint and not context.retrigger_joker then
+                card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.xmult_mod
+                return {
+                    message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.xmult } },
+                    colour = G.C.RED,
+                    delay = 0.45,
+                    dollars = card.ability.extra.dollars,
+                    func = function() -- This is for timing purposes, it runs after the dollar manipulation
+                        G.E_MANAGER:add_event(Event({
+                            func = function()
+                                G.GAME.dollar_buffer = 0
+                                return true
+                            end
+                        }))
+                    end
+                }
+            else
+                return {
+                    dollars = card.ability.extra.dollars,
+                    func = function() -- This is for timing purposes, it runs after the dollar manipulation
+                        G.E_MANAGER:add_event(Event({
+                            func = function()
+                                G.GAME.dollar_buffer = 0
+                                return true
+                            end
+                        }))
+                    end
+                }
+            end
+        end
+        if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint and not context.retrigger_joker then
+            local ranks = {}
+            for _, playing_card in ipairs(G.playing_cards) do
+                if not SMODS.has_no_rank(playing_card) and playing_card:get_id() ~= 11 then
+                    ranks[#ranks + 1] = playing_card
+                end
+            end
+            local rank_card = pseudorandom_element(ranks, 'fuseforce_ydkj')
+                if rank_card then
+                    card.ability.extra.rank = rank_card.base.value
+                    card.ability.extra.id = rank_card.base.id
+                end
+            card.ability.extra.xmult = 1
+            return {
+                message = localize('k_reset'),
+                colour = G.C.RED
+            }
+        end
+        if context.joker_main then
+            return {
+                xmult = card.ability.extra.xmult
+            }
+        end
+    end,
+    set_ability = function(self, card, initial, delay_sprites)
+        local ranks = {}
+        if G.playing_cards then
+            for _, playing_card in ipairs(G.playing_cards) do
+                if not SMODS.has_no_rank(playing_card) and playing_card:get_id() ~= 11 then
+                    ranks[#ranks + 1] = playing_card
+                end
+            end
+        end
+        local rank_card = pseudorandom_element(ranks, 'fuseforce_ydkj')
+        if rank_card then
+            card.ability.extra.rank = rank_card.base.value
+            card.ability.extra.id = rank_card.base.id
+        end
+    end
+}
+
+FusionJokers.fusions:register_fusion {
+	jokers = {
+		{ name = "j_mail", },
+		{ name = "j_hit_the_road" },
+	}, cost = 12, result_joker = "j_fuseforce_ydkj"
 }
 
 
@@ -6814,7 +7375,7 @@ SMODS.Joker {
 	key = "lighthouse",
 	name = "Lighthouse",
 	rarity = "fuse_fusion",
-	cost = 20,
+	cost = 22,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -6880,14 +7441,14 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_splash" },
 		{ name = "j_obelisk", carry_stat = "x_mult" },
-	}, cost = 9, result_joker = "j_fuseforce_lighthouse"
+	}, cost = 11, result_joker = "j_fuseforce_lighthouse"
 }
 
 SMODS.Joker {
 	key = "card_shark",
 	name = "Card Shark",
 	rarity = "fuse_fusion",
-	cost = 20,
+	cost = 22,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -6941,7 +7502,7 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_splash" },
 		{ name = "j_card_sharp" },
-	}, cost = 11, result_joker = "j_fuseforce_card_shark"
+	}, cost = 13, result_joker = "j_fuseforce_card_shark"
 }
 
 end
@@ -6952,7 +7513,7 @@ SMODS.Joker {
 	key = "rgb",
 	name = "RGB Joker",
 	rarity = "fuse_fusion",
-	cost = 25,
+	cost = 27,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -7058,14 +7619,14 @@ FusionJokers.fusions:register_fusion {
 		{ name = "j_red_card", merge_stat = "mult" },
 		{ name = "j_green_joker", merge_stat = "mult" },
 		{ name = "j_blue_joker" },
-	}, cost = 11, merged_stat = "mult", result_joker = "j_fuseforce_rgb"
+	}, cost = 13, merged_stat = "mult", result_joker = "j_fuseforce_rgb"
 }
 
 SMODS.Joker {
 	key = "vain",
 	name = "Vain Joker",
 	rarity = "fuse_fusion",
-	cost = 25,
+	cost = 27,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -7123,14 +7684,14 @@ FusionJokers.fusions:register_fusion {
 		{ name = "j_sly" },
 		{ name = "j_jolly" },
 		{ name = "j_duo" },
-	}, cost = 11, result_joker = "j_fuseforce_vain"
+	}, cost = 13, result_joker = "j_fuseforce_vain"
 }
 
 SMODS.Joker {
 	key = "fruity",
 	name = "Fruity Joker",
 	rarity = "fuse_fusion",
-	cost = 27,
+	cost = 29,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -7187,14 +7748,14 @@ FusionJokers.fusions:register_fusion {
 		{ name = "j_wily" },
 		{ name = "j_zany" },
 		{ name = "j_trio" },
-	}, cost = 11, result_joker = "j_fuseforce_fruity"
+	}, cost = 13, result_joker = "j_fuseforce_fruity"
 }
 
 SMODS.Joker {
 	key = "twotwo",
 	name = "Twotwo Joker",
 	rarity = "fuse_fusion",
-	cost = 27,
+	cost = 29,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -7251,14 +7812,14 @@ FusionJokers.fusions:register_fusion {
 		{ name = "j_clever" },
 		{ name = "j_mad" },
 		{ name = "j_family" },
-	}, cost = 11, result_joker = "j_fuseforce_twotwo"
+	}, cost = 13, result_joker = "j_fuseforce_twotwo"
 }
 
 SMODS.Joker {
 	key = "straight_man",
 	name = "The Straight Man",
 	rarity = "fuse_fusion",
-	cost = 27,
+	cost = 29,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -7315,14 +7876,14 @@ FusionJokers.fusions:register_fusion {
 		{ name = "j_devious" },
 		{ name = "j_crazy" },
 		{ name = "j_order" },
-	}, cost = 11, result_joker = "j_fuseforce_straight_man"
+	}, cost = 13, result_joker = "j_fuseforce_straight_man"
 }
 
 SMODS.Joker {
 	key = "flushed",
 	name = "Flushed Joker",
 	rarity = "fuse_fusion",
-	cost = 27,
+	cost = 29,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -7379,14 +7940,14 @@ FusionJokers.fusions:register_fusion {
 		{ name = "j_crafty" },
 		{ name = "j_droll" },
 		{ name = "j_tribe" },
-	}, cost = 11, result_joker = "j_fuseforce_flushed"
+	}, cost = 13, result_joker = "j_fuseforce_flushed"
 }
 
 SMODS.Joker {
 	key = "midas_joker",
 	name = "Midas Joker",
 	rarity = "fuse_fusion",
-	cost = 26,
+	cost = 28,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -7513,26 +8074,16 @@ FusionJokers.fusions:register_fusion {
 		{ name = "j_midas_mask" },
 		{ name = "j_ticket" },
 		{ name = "j_golden" },
-	}, cost = 8, result_joker = "j_fuseforce_midas_joker"
+	}, cost = 10, result_joker = "j_fuseforce_midas_joker"
 }
 
 --Legendary Fusions
-
-SMODS.Rarity {
-	key = "leg_fusion",
-	default_weight = 0,
-	badge_colour = G.C.DARK_EDITION,
-	pools = { ["Joker"] = false },
-	get_weight = function(self, weight, object_type)
-		return weight
-	end,
-}
 
 SMODS.Joker {
 	key = "legendary_poxy",
 	name = "Poxy",
 	rarity = "fuseforce_leg_fusion",
-	cost = 40,
+	cost = 60,
 	unlocked = true,
 	discovered = false,
 	blueprint_compat = true,
@@ -7610,5 +8161,5 @@ FusionJokers.fusions:register_fusion {
 	jokers = {
 		{ name = "j_fuse_golden_egg" },
 		{ name = "j_fuseforce_skipper" },
-	}, cost = 10, result_joker = "j_fuseforce_legendary_poxy"
+	}, cost = 20, result_joker = "j_fuseforce_legendary_poxy"
 }

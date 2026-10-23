@@ -69,7 +69,7 @@ target = '=[SMODS partner "partner.lua"]'
 pattern = '''link_config = {j_red_card = 1},'''
 position = "at"
 payload = '''
-link_config = {j_red_card = 1, j_fuseforce_bribery_clown = 1, j_fuseforce_rgb = 1},
+link_config = {j_red_card = 1, j_fuseforce_bribery_clown = 1, j_fuseforce_rgb = 1, j_fuseforce_extra_orange_card = 1},
 '''
 match_indent = true
 
