@@ -14,7 +14,7 @@ Cross-Mod content:
 
 ## changelog
 
-V1.3.2
+V1.3.2c
 
 ### Bugfixes:
 Easter Egg now applies Tarot bonus to Hermit and Temperence in booster packs.
@@ -30,6 +30,10 @@ Cactus Juice no longer spawns extra cards if you have Two-Heads.
 Shadow can no longer be used on jokers that are already negative when using it's Minus Deck effect.
 
 Suitable partner no longer crashes when used unboosted.
+
+(b) No longer requires Amulet/Talisman.
+
+(c) Fixed backwards values on Melancholy Joker
 
 
 ### Balance:
@@ -58,7 +62,7 @@ Onwards partner now displays +Chips the same way Flag Bearer displays +mult, by 
 Stew and Dumplings renamed to Perpetual Stew.
 
 ### Added Content:
-- Fusions: Banana Bunch, Peak Performance, Hitchhiker, Gold Miner, Theatre, You Don't Know Joker
+- Fusions: Banana Bunch, Peak Performance, Hitchhiker, Gold Miner, Theatre, You Don't Know Joker, Horizontal Joker
 
 - Extra Credit Fusions: Art Heist, Electrum Joker, Blast Furnace, Orange Card, String Theory, Flag Carrier, Blue Planet
 

@@ -1902,8 +1902,8 @@ SMODS.Joker {
 		extra = {	
 			x_mult = 1,
 			chips = 56,
-			x_mult_mod = 8,
-			chips_mod = 0.25,
+			x_mult_mod = 0.25,
+			chips_mod = 8,
 			joker1 = "j_blue_joker",
 			joker2 = "j_hologram"
     	}
@@ -7364,6 +7364,88 @@ FusionJokers.fusions:register_fusion {
 		{ name = "j_mail", },
 		{ name = "j_hit_the_road" },
 	}, cost = 12, result_joker = "j_fuseforce_ydkj"
+}
+
+SMODS.Joker {
+	key = "horizontal",
+	name = "Horizontal Joker",
+	rarity = "fuse_fusion",
+	cost = 18,
+	unlocked = true,
+	discovered = false,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	attributes = {"mult", "xmult", "joker"},
+	atlas = "fuseforce_jokers",
+	pos = { x = 1, y = 11 },
+    artist_credits = {'minus'},
+    config = {
+		extra = {
+            mult = 5,
+            xmult = 1,
+			joker1 = "j_misprint",
+			joker2 = "j_abstract"
+    	}
+	},
+    loc_vars = function(self, info_queue, card)
+    local joker_count = 0
+    local neg_count = 0
+    if G.jokers then
+        for i = 1, #G.jokers.cards do
+            if G.jokers.cards[i].ability.set == 'Joker' and G.jokers.cards[i].edition and G.jokers.cards[i].edition.key == "e_negative" then
+                joker_count = joker_count + 1
+                neg_count = neg_count + 1
+            else
+                joker_count = joker_count + 1
+            end
+        end
+    end
+	return {
+		vars = {
+			card.ability.extra.mult,
+			card.ability.extra.xmult,
+			card.ability.extra.mult * joker_count,
+			card.ability.extra.xmult * joker_count,
+			joker_count - neg_count,
+    		localize{type = 'name_text', key = card.ability.extra.joker1, set = 'Joker'}, 
+    		localize{type = 'name_text', key = card.ability.extra.joker2, set = 'Joker'}
+		}
+	}
+    end,
+	calculate = function(self, card, context)
+        --if context.individual and context.cardarea == G.play then
+        if context.joker_main then
+            --if not context.blueprint and not context.retrigger_joker then
+                local joker_count = 0
+                local neg_count = 0
+                for i = 1, #G.jokers.cards do
+                    if G.jokers.cards[i].edition and G.jokers.cards[i].edition.key == "e_negative" then
+                        joker_count = joker_count + 1
+                        neg_count = neg_count + 1
+                    else
+                        joker_count = joker_count + 1
+                    end
+                end
+            --end
+            if #context.full_hand == (joker_count - neg_count) then
+                return {
+                    xmult = card.ability.extra.xmult * joker_count
+                }
+            else
+                return {
+                    mult = card.ability.extra.mult * joker_count
+                }
+            end
+        end
+    end
+}
+
+FusionJokers.fusions:register_fusion {
+	jokers = {
+		{ name = "j_misprint", },
+		{ name = "j_abstract" },
+	}, cost = 10, result_joker = "j_fuseforce_horizontal"
 }
 
 

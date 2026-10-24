@@ -788,7 +788,7 @@ return {
 			},
 			['itayfeder'] = {
 				["text"] = {
-					"itayfeder",
+					"Lyman",
 				}
 			},
 			['inkyst'] = {
@@ -1696,6 +1696,15 @@ return {
 					"changes every round",
 					"{C:inactive}(Currently {X:mult,C:white}X#1#{C:inactive} Mult)",
 					"{s:0.8,C:inactive}(#6# + #7#)"
+				},
+			},
+			["j_fuseforce_horizontal"] = {
+				["name"] = "Horizontal Joker",
+				["text"] = {
+					"{C:mult}+#1#{} Mult for each {C:attention}Joker{} card, or {X:mult,C:white}X#2#{} Mult instead when",
+					"{C:attention}cards played{} is equal to non-{C:dark_edition}Negative{} {C:attention}Jokers{} owned",
+					"{C:inactive}(Currently {C:mult}+#3#{C:inactive}, or {X:mult,C:white}X#4#{C:inactive} Mult when {C:attention}#5#{C:inactive} cards played)",
+					"{C:inactive}(#6# + #7#)"
 				},
 			},
 			["j_fuseforce_lighthouse"] = {
